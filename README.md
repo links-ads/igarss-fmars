@@ -8,15 +8,18 @@ For this project, we used python 3.8.5. We recommend setting up a new virtual
 environment:
 
 ```shell
-python -m venv ~/venv/mic-seg
-source ~/venv/mic-seg/bin/activate
+pyenv install 3.8.17
+pyenv global 3.8.17
+python -m venv .venv
+source .venv/bin/activate
 ```
 
 In that environment, the requirements can be installed with:
 
 ```shell
-pip install -r requirements.txt -f https://download.pytorch.org/whl/torch_stable.html
-pip install mmcv-full==1.3.7  # requires the other packages to be installed first
+pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.0/index.html
+pip install -e .
 ```
 
 Please, download the MiT-B5 ImageNet weights provided by [SegFormer](https://github.com/NVlabs/SegFormer?tab=readme-ov-file#training)

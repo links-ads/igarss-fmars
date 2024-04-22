@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mmseg"
+authors = [{name = "LINKS Foundation", email = "adsadmin@linksfoundation.com"}]
+description = "TODO"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+]
+# Main dependencies, use this to include everything that the project needs to run in production.
+# Depending on the use case, you can adopt a strict or loose versioning policy.
+# e.g.:
+# using strict versioning
+# "requests == 2.25.0",
+# using loose versioning
+# "requests >= 2.25.0, < 3.0.0",
+# using extras
+# "uvicorn[standard] >= 0.15.0, < 0.16.0",
+# using specific urls
+# "torch @ https://download.pytorch.org/whl/cu117/torch-2.0.1%2Bcu117-cp310-cp310-linux_x86_64.whl",
+# "torchvision @ https://download.pytorch.org/whl/cu117/torchvision-0.15.2%2Bcu117-cp310-cp310-linux_x86_64.whl",
+
+# Dynamic metadata allow to assign the version number to the package at build time.
+# The location of the version number is specified in the [tool.setuptools.dynamic] section.
+dynamic = ["version", "dependencies"]
+
+# Optional dependencies, use this to include everything that the project needs to run in development.
+# These can be installed by specifying for instance `pip install -e .[dev|docs|test]`
+# Here the loose versioning policy is usually preferred.
+[project.optional-dependencies]
+# Add development dependencies here
+dev = []
+# Add documentation dependencies here
+docs = []
+# Add testing dependencies here
+test = [
+    "coverage >= 7.3.0, < 8",
+    "pytest >= 7.4.0, < 8",
+    "pytest-cov >= 4.1.0, < 5",
+]
+
+[tool.setuptools.dynamic]
+version = {attr = "mmseg.version.__version__"}
+dependencies = {file = "requirements.txt"}
+
+[tool.setuptools.packages.find]
+where = [""]
+include = ["mmseg"]  # alternatively: `exclude = ["additional*"]`
+
+[tool.ruff]
+line-length = 119
+src = ["src"]
+select = ["E", "F", "UP"]
