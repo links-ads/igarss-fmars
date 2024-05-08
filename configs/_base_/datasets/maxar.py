@@ -1,9 +1,39 @@
+batch_size = 1
+crop_size=(640,640)
+
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-crop_size=(512,512)
+train_pipeline = [
+            dict(type='LoadTifFromFile'),
+            dict(type='LoadTifAnnotations'),
+            dict(type='RandomCrop', crop_size=crop_size),
+            dict(type='Normalize', **img_norm_cfg), 
+            dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
+            dict(type='Collect', 
+                 keys=['img', 'gt_semantic_seg'],
+                 meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg',)
+                ),
+            ]
+test_pipeline = [
+            dict(type='LoadTifFromFile'),
+            dict(
+                    type='MultiScaleFlipAug', 
+                    img_scale=crop_size, 
+                    flip=False,
+                    transforms=[
+                        dict(type='Normalize', **img_norm_cfg), 
+                        dict(type='ImageToTensor', keys=['img']),
+                        dict(type='Collect', 
+                            keys=['img'],
+                            meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg')
+                        ),
+                    ]
+                )
+            ]
+
 data = dict(
-    samples_per_gpu=2,
-    workers_per_gpu=2,
+    samples_per_gpu=batch_size,
+    workers_per_gpu=batch_size,
     train=dict(
         type='TifDataset',
         data_root='./',
@@ -12,17 +42,7 @@ data = dict(
         ann_dir = 'data/outputs/19_4/',
         seg_map_suffix = '.tif',
         split = 'train',
-        pipeline=[
-            dict(type='LoadTifFromFile'),
-            dict(type='LoadTifAnnotations'),
-            dict(type='RandomCrop', crop_size=crop_size),
-            dict(type='Normalize', **img_norm_cfg), 
-            dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
-            dict(type='Collect', 
-                 keys=['img', 'gt_semantic_seg'],
-                 meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'ann_info')
-                ),
-            ]
+        pipeline=train_pipeline,
     ),
     val=dict(
         type='TifDataset',
@@ -32,17 +52,7 @@ data = dict(
         ann_dir = 'data/outputs/19_4/',
         seg_map_suffix = '.tif',
         split = 'val',
-        pipeline=[
-            dict(type='LoadTifFromFile'),
-            dict(type='LoadTifAnnotations'),
-            dict(type='RandomCrop', crop_size=crop_size),
-            dict(type='Normalize', **img_norm_cfg),
-            dict(type='SwapChannels'),
-            dict(type='Collect', 
-                 keys=['img', 'gt_semantic_seg'],
-                 meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'ann_info')
-                ),
-            ]
+        pipeline=test_pipeline,
     ),
     test=dict(
         type='TifDataset',
@@ -52,16 +62,6 @@ data = dict(
         ann_dir = 'data/outputs/19_4/',
         seg_map_suffix = '.tif',
         split = 'test',
-        pipeline=[
-            dict(type='LoadTifFromFile'),
-            dict(type='LoadTifAnnotations'),
-            dict(type='RandomCrop', crop_size=crop_size),
-            dict(type='Normalize', **img_norm_cfg),
-            dict(type='SwapChannels'),
-            dict(type='Collect', 
-                 keys=['img', 'gt_semantic_seg'],
-                 meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'ann_info')
-                ),
-            ]
+        pipeline=test_pipeline,
     )
 )

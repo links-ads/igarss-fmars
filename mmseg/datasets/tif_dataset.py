@@ -15,7 +15,7 @@ class TifDataset(CustomDataset):
                          split = 'train',):
         img_infos = []
         folders = [f for f in os.listdir(ann_dir) if os.path.isdir(os.path.join(ann_dir, f))]
-        for folder in folders: # here is where i load paths
+        for folder in folders:
             ann_folder = os.path.join(ann_dir, folder)
             img_folder = os.path.join(img_dir, folder)
             # append 'pre/' to both
@@ -36,5 +36,4 @@ class TifDataset(CustomDataset):
                         )
                         img_info['ann'] = dict(seg_map=ann_tile)
                         img_infos.append(img_info)
-        # TODO: split the dataset into train/val/test
         return img_infos

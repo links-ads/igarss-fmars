@@ -5,10 +5,8 @@ _base_ = [
     '../_base_/datasets/maxar.py',
 ]
 
-
-total_iters = 1000
-lr_config = dict(policy='poly', power=0.9, min_lr=0.0001, by_epoch=False)
+lr_config = dict(policy='fixed')
 
 # Logging Configuration
-checkpoint_config = dict(by_epoch=False, max_keep_ckpts=1)
-runner = dict(type='IterBasedRunner', max_iters=40000)
+checkpoint_config = dict(by_epoch=False, interval=1)
+runner = dict(type='EpochBasedRunner', max_epochs=100)
