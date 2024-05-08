@@ -1,2 +1,4 @@
-srun --job-name=fmars --gres=gpu:1g.20gb:1 -p A100 --cpus-per-task=10 python -B -O tools/train.py \
-        configs/maxar/train_first_attempt.py
+srun --job-name=fmars --gres=gpu:1g.20gb:1 -p A100 --cpus-per-task=10 python -B -O tools/train.py configs/maxar/train_first_attempt.py
+srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=10 python -B -O tools/train.py configs/maxar/train_first_attempt.py
+srun --job-name=fmars --gres=gpu:1 -p A100 --cpus-per-task=10 python -B -O tools/train.py configs/maxar/train_first_attempt.py
+srun --job-name=fmars --gres=gpu:1 -p RTX --cpus-per-task=10 python -B -O tools/train.py configs/maxar/train_first_attempt.py

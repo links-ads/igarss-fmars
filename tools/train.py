@@ -171,7 +171,8 @@ def main(args):
         datasets,
         cfg,
         distributed=distributed,
-        validate=(not args.no_validate),
+        # validate=(not args.no_validate),
+        validate=False,
         timestamp=timestamp,
         meta=meta)
 

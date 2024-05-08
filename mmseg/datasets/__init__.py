@@ -5,6 +5,7 @@ from .acdc import ACDCDataset
 from .builder import DATASETS, PIPELINES, build_dataloader, build_dataset
 from .cityscapes import CityscapesDataset
 from .custom import CustomDataset
+from .tif_dataset import TifDataset
 from .dark_zurich import DarkZurichDataset
 from .dataset_wrappers import ConcatDataset, RepeatDataset
 from .gta import GTADataset
@@ -25,4 +26,5 @@ __all__ = [
     'UDADataset',
     'ACDCDataset',
     'DarkZurichDataset',
+    'TifDataset',
 ]
