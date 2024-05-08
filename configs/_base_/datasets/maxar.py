@@ -25,7 +25,7 @@ test_pipeline = [
                         dict(type='ImageToTensor', keys=['img']),
                         dict(type='Collect', 
                             keys=['img'],
-                            meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg')
+                            meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'flip')
                         ),
                     ]
                 )
