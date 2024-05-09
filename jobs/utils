@@ -7,10 +7,10 @@ srun --job-name=fmars --gres=gpu:1 -p RTX --cpus-per-task=10 python -B -O tools/
 
 # test
 srun --job-name=fmars --gres=gpu:1g.20gb:1 -p A100 --cpus-per-task=10 python -B -O tools/test.py configs/maxar/train_first_attempt.py work_dirs/train_first_attempt/latest.pth --out results.pkl --eval mIoU
-srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=10 python -B -O tools/test.py configs/maxar/train_first_attempt.py work_dirs/train_first_attempt/latest.pth --out results.pkl --eval mIoU
+srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=10 python -B -O tools/test.py configs/maxar/b5.py work_dirs/b5/latest.pth --out results.pkl --eval mIoU
 srun --job-name=fmars --gres=gpu:1 -p A100 --cpus-per-task=10 python -B -O tools/test.py configs/maxar/train_first_attempt.py work_dirs/train_first_attempt/latest.pth --out results.pkl --eval mIoU
 srun --job-name=fmars --gres=gpu:1 -p RTX --cpus-per-task=10 python -B -O tools/test.py configs/maxar/train_first_attempt.py work_dirs/train_first_attempt/latest.pth --out results.pkl --eval mIoU
 
 
 # tensorboard
-tensorboard --logdir=work_dirs/train_first_attempt
+tensorboard --logdir=work_dirs/train_first_attempt/tf_logs --port=6066

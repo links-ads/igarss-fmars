@@ -1,6 +1,8 @@
 import os
 from .builder import DATASETS
 from .custom import CustomDataset
+import os.path as osp
+import rasterio as rio
 
 @DATASETS.register_module()
 class TifDataset(CustomDataset):
@@ -37,3 +39,19 @@ class TifDataset(CustomDataset):
                         img_info['ann'] = dict(seg_map=ann_tile)
                         img_infos.append(img_info)
         return img_infos
+
+
+    def get_gt_seg_maps(self, efficient_test=False):
+        """Get ground truth segmentation maps for evaluation."""
+        gt_seg_maps = []
+        for img_info in self.img_infos:
+            seg_map = osp.join(self.ann_dir, img_info['ann']['seg_map'])
+            if efficient_test:
+                gt_seg_map = seg_map
+            else:
+                # gt_seg_map = mmcv.imread(
+                #     seg_map, flag='unchanged', backend='pillow')
+                with rio.open(seg_map) as src:
+                    gt_seg_map = src.read()
+            gt_seg_maps.append(gt_seg_map[0])
+        return gt_seg_maps

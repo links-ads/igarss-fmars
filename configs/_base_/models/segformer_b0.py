@@ -10,12 +10,11 @@ norm_cfg = dict(type='BN', requires_grad=True)
 find_unused_parameters = True
 model = dict(
     type='EncoderDecoder',
-    # pretrained='pretrained/mit_b5.pth',
     pretrained=None,
-    backbone=dict(type='mit_b5', style='pytorch'),
+    backbone=dict(type='mit_b0', style='pytorch'),
     decode_head=dict(
         type='SegFormerHead',
-        in_channels=[64, 128, 320, 512],
+        in_channels=[32, 64, 160, 256],
         in_index=[0, 1, 2, 3],
         channels=128,
         dropout_ratio=0.1,
@@ -27,5 +26,5 @@ model = dict(
             type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
     # model training and testing settings
     train_cfg=dict(),
-    test_cfg=dict(mode='slide', crop_size=(640, 640), stride=(640, 640))
+    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(512, 512))
 )

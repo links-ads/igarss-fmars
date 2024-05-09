@@ -24,6 +24,10 @@ from mmseg.models.builder import build_train_model
 from mmseg.utils import collect_env, get_root_logger
 from mmseg.utils.collect_env import gen_code_archive
 
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning, 
+                        message=".*an integer is required.*")
+
 
 def parse_args(args):
     parser = argparse.ArgumentParser(description='Train a segmentor')
@@ -171,8 +175,8 @@ def main(args):
         datasets,
         cfg,
         distributed=distributed,
-        validate=(not args.no_validate),
-        # validate=False,
+        #validate=(not args.no_validate),
+        validate=False,
         timestamp=timestamp,
         meta=meta)
 

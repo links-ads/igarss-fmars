@@ -4,10 +4,10 @@
 # yapf:disable
 log_config = dict(
     interval=1,
-    img_interval=1000,
+    img_interval=10,
     hooks=[
         dict(type='TextLoggerHook', by_epoch=False),
-        # dict(type='TensorboardLoggerHook')
+        dict(type='TensorboardLoggerHook')
     ])
 # yapf:enable
 dist_params = dict(backend='nccl')
