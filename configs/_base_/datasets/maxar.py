@@ -1,5 +1,5 @@
 batch_size = 4
-crop_size=(512,512)
+crop_size=(640,640)
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -11,7 +11,7 @@ train_pipeline = [
             dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
             dict(type='Collect', 
                  keys=['img', 'gt_semantic_seg'],
-                 meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg',)
+                 meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'target_img', 'target_img_metas')
                 ),
             ]
 test_pipeline = [
@@ -25,7 +25,7 @@ test_pipeline = [
                         dict(type='ImageToTensor', keys=['img']),
                         dict(type='Collect', 
                             keys=['img'],
-                            meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'flip')
+                            meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'flip', 'target_img', 'target_img_metas')
                         ),
                     ]
                 )
@@ -49,7 +49,7 @@ data = dict(
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
-        ann_dir = 'data/outputs/19_4/train/',
+        ann_dir = 'data/outputs/19_4/val/',
         seg_map_suffix = '.tif',
         split = 'val',
         pipeline=test_pipeline,

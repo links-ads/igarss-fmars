@@ -4,19 +4,24 @@ from .custom import CustomDataset
 import os.path as osp
 import rasterio as rio
 
+
 @DATASETS.register_module()
 class TifDataset(CustomDataset):
     CLASSES = ('background', 'road', 'tree', 'building',)
-    PALETTE = ([0,0,0], [128, 64, 128], [0, 128, 0], [70, 70, 70]) 
+    PALETTE = ([0, 0, 0], [128, 64, 128], [0, 128, 0], [70, 70, 70])
 
-    def load_annotations(self, 
-                         img_dir = 'data/maxar-open-data', 
-                         img_suffix = '.tif', 
-                         ann_dir = 'data/outputs/', 
-                         seg_map_suffix = '.tif',
-                         split = 'train',):
+    def load_annotations(self,
+                         img_dir='data/maxar-open-data',
+                         img_suffix='.tif',
+                         ann_dir='data/outputs/',
+                         seg_map_suffix='.tif',
+                         split='train',
+                         rare_class_sampling=None,
+                         ):
+        self.rare_class_sampling = rare_class_sampling
         img_infos = []
-        folders = [f for f in os.listdir(ann_dir) if os.path.isdir(os.path.join(ann_dir, f))]
+        folders = [f for f in os.listdir(
+            ann_dir) if os.path.isdir(os.path.join(ann_dir, f))]
         for folder in folders:
             ann_folder = os.path.join(ann_dir, folder)
             img_folder = os.path.join(img_dir, folder)
@@ -40,7 +45,6 @@ class TifDataset(CustomDataset):
                         img_infos.append(img_info)
         return img_infos
 
-
     def get_gt_seg_maps(self, efficient_test=False):
         """Get ground truth segmentation maps for evaluation."""
         gt_seg_maps = []
@@ -49,8 +53,6 @@ class TifDataset(CustomDataset):
             if efficient_test:
                 gt_seg_map = seg_map
             else:
-                # gt_seg_map = mmcv.imread(
-                #     seg_map, flag='unchanged', backend='pillow')
                 with rio.open(seg_map) as src:
                     gt_seg_map = src.read()
             gt_seg_maps.append(gt_seg_map[0])
