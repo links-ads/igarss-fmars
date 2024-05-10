@@ -11,7 +11,7 @@ train_pipeline = [
             dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
             dict(type='Collect', 
                  keys=['img', 'gt_semantic_seg'],
-                 meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'target_img', 'target_img_metas')
+                 meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg')
                 ),
             ]
 test_pipeline = [
@@ -25,7 +25,7 @@ test_pipeline = [
                         dict(type='ImageToTensor', keys=['img']),
                         dict(type='Collect', 
                             keys=['img'],
-                            meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'flip', 'target_img', 'target_img_metas')
+                            meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'flip',)
                         ),
                     ]
                 )
