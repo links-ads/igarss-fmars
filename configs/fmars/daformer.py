@@ -9,7 +9,7 @@ _base_ = [
     # DAFormer Network Architecture
     '../_base_/models/daformer_sepaspp_mitb5.py',
     # GTA->Cityscapes Data Loading
-    '../_base_/datasets/maxar.py',
+    '../_base_/datasets/uda_maxar_to_maxar.py',
     # Basic UDA Self-Training
     '../_base_/uda/dacs.py',
     # AdamW Optimizer
@@ -48,7 +48,7 @@ n_gpus = 1
 runner = dict(type='IterBasedRunner', max_iters=40000)
 # Logging Configuration
 checkpoint_config = dict(by_epoch=False, interval=40000, max_keep_ckpts=1)
-evaluation = dict(interval=4000, metric='mIoU')
+evaluation = dict(interval=2, metric='mIoU')
 # # Meta Information for Result Analysis
 # name = 'gta2cs_uda_warm_fdthings_rcs_croppl_a999_daformer_mitb5_s0'
 # exp = 'basic'
