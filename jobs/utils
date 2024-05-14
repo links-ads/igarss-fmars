@@ -29,7 +29,7 @@ srun --job-name=fmars --gres=gpu:1 -p RTX --cpus-per-task=10 python -B -O tools/
 
 
 # tensorboard
-tensorboard --logdir=work_dirs/train_first_attempt/tf_logs --port=6066
+tensorboard --logdir=work_dirs/segformer/tf_logs --port=6066
 
 
 
