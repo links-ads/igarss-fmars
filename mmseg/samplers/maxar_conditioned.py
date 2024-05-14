@@ -37,7 +37,7 @@ class MaxarConditionedSampler(Sampler):
                 start = self.num_event_imgs[rnd_ix - 1]
             end = self.num_event_imgs[rnd_ix]
             i = random.randint(start, end - 1)
-            print(i)
+            # print(i)
             yield i
     
     def __len__(self):
