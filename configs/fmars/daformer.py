@@ -24,9 +24,12 @@ uda = dict(
     # Increased Alpha
     alpha=0.999,
     # Thing-Class Feature Distance
-    imnet_feature_dist_lambda=0.005,
-    imnet_feature_dist_classes=[6, 7, 11, 12, 13, 14, 15, 16, 17, 18],
-    imnet_feature_dist_scale_min_ratio=0.75,
+    # imnet_feature_dist_lambda=0.005,
+    # imnet_feature_dist_classes=[6, 7, 11, 12, 13, 14, 15, 16, 17, 18],
+    # imnet_feature_dist_scale_min_ratio=0.75,
+    imnet_feature_dist_lambda=0,
+    imnet_feature_dist_classes=None,
+    imnet_feature_dist_scale_min_ratio=None,
     # Pseudo-Label Crop
     pseudo_weight_ignore_top=15,
     pseudo_weight_ignore_bottom=120)
