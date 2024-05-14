@@ -14,6 +14,8 @@ from mmcv.runner import get_dist_info
 from mmcv.utils import Registry, build_from_cfg
 from torch.utils.data import DataLoader, DistributedSampler
 
+from mmseg.samplers.maxar_conditioned import MaxarConditionedSampler
+
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
     import resource
@@ -135,7 +137,8 @@ def build_dataloader(dataset,
         batch_size = samples_per_gpu
         num_workers = workers_per_gpu
     else:
-        sampler = None
+        sampler = MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
+        shuffle = False
         batch_size = num_gpus * samples_per_gpu
         num_workers = num_gpus * workers_per_gpu
 
