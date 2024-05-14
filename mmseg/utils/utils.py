@@ -60,6 +60,11 @@ def compute_entropy_matrix(img):
 
 def get_weighted_random_idxs(matrix):
     flat_matrix = matrix.flatten()
-    flat_index = np.random.choice(len(flat_matrix), p=flat_matrix/flat_matrix.sum())
+    tot = np.sum(flat_matrix)
+    if tot == 0:
+        p = np.ones(len(flat_matrix))/len(flat_matrix)
+    else:
+        p = flat_matrix/tot
+    flat_index = np.random.choice(len(flat_matrix), p=p)
     # Convert the flat index back to a 2D index
     return np.unravel_index(flat_index, matrix.shape)
