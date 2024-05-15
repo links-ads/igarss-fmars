@@ -33,4 +33,4 @@ tensorboard --logdir=work_dirs/segformer/tf_logs --port=6066
 
 
 
-srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=10 --pty code tunnel
+srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=10 --pty code tunnel
