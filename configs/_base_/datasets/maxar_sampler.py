@@ -1,4 +1,3 @@
-batch_size = 4
 crop_size=(640,640)
 
 img_norm_cfg = dict(
@@ -21,6 +20,7 @@ test_pipeline = [
                     img_scale=crop_size, 
                     flip=False,
                     transforms=[
+                        dict(type='CenterCrop', crop_size=(1024,1024)),
                         dict(type='Normalize', **img_norm_cfg), 
                         dict(type='ImageToTensor', keys=['img']),
                         dict(type='Collect', 
@@ -32,8 +32,8 @@ test_pipeline = [
             ]
 
 data = dict(
-    samples_per_gpu=batch_size,
-    workers_per_gpu=batch_size,
+    samples_per_gpu=2,
+    workers_per_gpu=4,
     train=dict(
         type='MaxarDataset',
         data_root='./',

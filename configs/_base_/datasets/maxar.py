@@ -21,6 +21,7 @@ test_pipeline = [
                     img_scale=crop_size, 
                     flip=False,
                     transforms=[
+                        dict(type='CenterCrop', crop_size=(1024,1024)),
                         dict(type='Normalize', **img_norm_cfg), 
                         dict(type='ImageToTensor', keys=['img']),
                         dict(type='Collect', 
