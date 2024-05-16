@@ -4,8 +4,8 @@ crop_size=(640,640)
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
-            dict(type='LoadTifAnnotations'),
-            dict(type='LoadTifWindow'),
+            dict(type='ImageTifLoadIJ'),
+            dict(type='LableTifLoadIJ'),
             dict(type='RandomCrop', crop_size=crop_size),
             dict(type='Normalize', **img_norm_cfg), 
             dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
@@ -39,7 +39,7 @@ data = dict(
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
-        ann_dir = 'data/outputs/19_4/train/',
+        ann_dir = 'data/outputs/04_05/train/',
         seg_map_suffix = '.tif',
         split = 'train',
         pipeline=train_pipeline,
@@ -49,7 +49,7 @@ data = dict(
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
-        ann_dir = 'data/outputs/19_4/val/',
+        ann_dir = 'data/outputs/04_05/val/',
         seg_map_suffix = '.tif',
         split = 'val',
         pipeline=test_pipeline,
@@ -59,7 +59,7 @@ data = dict(
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
-        ann_dir = 'data/outputs/19_4/test/',
+        ann_dir = 'data/outputs/04_05/test/',
         seg_map_suffix = '.tif',
         split = 'test',
         pipeline=test_pipeline,
