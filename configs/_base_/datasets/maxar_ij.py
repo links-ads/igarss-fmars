@@ -1,5 +1,4 @@
-batch_size = 4
-crop_size=(640,640)
+crop_size=(512,512)
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -13,6 +12,23 @@ train_pipeline = [
                  keys=['img', 'gt_semantic_seg'],
                  meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg')
                 ),
+            ]
+val_pipeline = [
+            dict(type='LoadTifFromFile'),
+            dict(
+                    type='MultiScaleFlipAug', 
+                    img_scale=crop_size, 
+                    flip=False,
+                    transforms=[
+                        dict(type='CenterCrop', crop_size=(2048,2048)),
+                        dict(type='Normalize', **img_norm_cfg), 
+                        dict(type='ImageToTensor', keys=['img']),
+                        dict(type='Collect', 
+                            keys=['img'],
+                            meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'flip',)
+                        ),
+                    ]
+                )
             ]
 test_pipeline = [
             dict(type='LoadTifFromFile'),
@@ -31,9 +47,11 @@ test_pipeline = [
                 )
             ]
 
+
+
 data = dict(
-    samples_per_gpu=batch_size,
-    workers_per_gpu=batch_size,
+    samples_per_gpu=4,
+    workers_per_gpu=16,
     train=dict(
         type='MaxarDsEntropy',
         data_root='./',
@@ -52,7 +70,7 @@ data = dict(
         ann_dir = 'data/outputs/04_05/val/',
         seg_map_suffix = '.tif',
         split = 'val',
-        pipeline=test_pipeline,
+        pipeline=val_pipeline,
     ),
     test=dict(
         type='MaxarDsEntropy',

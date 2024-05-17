@@ -139,7 +139,7 @@ def build_dataloader(dataset,
         num_workers = workers_per_gpu
     else:
         if dataset.split == './train':
-            sampler = MaxarEntropySampler(dataset.num_event_imgs, all_train_paths = dataset.all_train_paths, seed = 0) #MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
+            sampler = MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
         else:
             sampler = None
         shuffle = False
