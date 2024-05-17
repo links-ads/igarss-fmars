@@ -9,8 +9,8 @@ img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 crop_size = (512, 512)
 train_pipeline = [
-            dict(type='LoadTifAnnotations'),
-            dict(type='LoadTifWindow'),
+            dict(type='LoadTifWindowAnnotation'),
+            dict(type='LoadTifWindowImage'),
             dict(type='RandomCrop', crop_size=crop_size),
             dict(type='Normalize', **img_norm_cfg), 
             dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
