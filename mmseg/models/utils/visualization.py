@@ -158,13 +158,51 @@ def subplotimg(ax,
             if torch.is_tensor(img):
                 img = img.numpy()
             img = colorize_mask(img, palette)
-        
-
     if range_in_title:
         vmin = np.min(img)
         vmax = np.max(img)
         title += f' {vmin:.3f}-{vmax:.3f}'
+    ax.imshow(img, **kwargs)
+    if title is not None:
+        ax.set_title(title)
 
+def subplotimg_daf(ax,
+               img,
+               title=None,
+               range_in_title=False,
+               palette=Cityscapes_palette,
+               **kwargs):
+    if img is None:
+        return
+    with torch.no_grad():
+        if torch.is_tensor(img):
+            img = img.cpu()
+        if len(img.shape) == 2:
+            if torch.is_tensor(img):
+                img = img.numpy()
+        elif img.shape[0] == 1:
+            if torch.is_tensor(img):
+                img = img.numpy()
+            img = img.squeeze(0)
+        elif img.shape[0] == 3:
+            img = img.permute(1, 2, 0)
+            if torch.is_tensor(img):
+                img = img.numpy()
+            img = img[:, :, ::-1]
+        if kwargs.get('cmap', '') == 'cityscapes':
+            kwargs.pop('cmap')
+            if torch.is_tensor(img):
+                img = img.numpy()
+            img = colorize_mask(img, palette)
+        elif kwargs.get('cmap', '') == 'viridis':
+            kwargs.pop('cmap')
+            if torch.is_tensor(img):
+                img = img.numpy()
+            img = colorize_mask(img, palette)
+    if range_in_title:
+        vmin = np.min(img)
+        vmax = np.max(img)
+        title += f' {vmin:.3f}-{vmax:.3f}'
     ax.imshow(img, **kwargs)
     if title is not None:
         ax.set_title(title)

@@ -38,5 +38,5 @@ model = dict(
             type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
     # model training and testing settings
     train_cfg=dict(),
-    test_cfg=dict(mode='slide', crop_size=(640, 640), stride=(640, 640))
+    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(512, 512))
 )

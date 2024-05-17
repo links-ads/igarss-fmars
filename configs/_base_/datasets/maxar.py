@@ -1,4 +1,4 @@
-crop_size=(640, 640)
+crop_size=(512, 512)
 
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -55,7 +55,7 @@ data = dict(
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
-        ann_dir = 'data/outputs/19_4/train/',
+        ann_dir = 'data/outputs/04_05/train/',
         seg_map_suffix = '.tif',
         split = 'train',
         pipeline=train_pipeline,
@@ -65,7 +65,8 @@ data = dict(
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
-        ann_dir = 'data/outputs/19_4/val/',
+        ann_dir = 'data/outputs/04_05/val/',
+        # ann_dir = 'data/outputs/19_4/val/',
         seg_map_suffix = '.tif',
         split = 'val',
         pipeline=val_pipeline,
@@ -75,7 +76,7 @@ data = dict(
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
-        ann_dir = 'data/outputs/19_4/test/',
+        ann_dir = 'data/outputs/04_05/test/',
         seg_map_suffix = '.tif',
         split = 'test',
         pipeline=test_pipeline,

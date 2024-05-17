@@ -373,7 +373,7 @@ class EncoderDecoder(BaseSegmentor):
             crop_imgs, crops = [], []
             for h_idx in range(h_grids):
                 for w_idx in range(w_grids):
-                    print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
+                    # print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
                     y1 = h_idx * h_stride
                     x1 = w_idx * w_stride
                     y2 = min(y1 + h_crop, h_img)
@@ -397,7 +397,7 @@ class EncoderDecoder(BaseSegmentor):
         else:
             for h_idx in range(h_grids):
                 for w_idx in range(w_grids):
-                    print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
+                    # print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
                     y1 = h_idx * h_stride
                     x1 = w_idx * w_stride
                     y2 = min(y1 + h_crop, h_img)

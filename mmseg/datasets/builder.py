@@ -137,8 +137,10 @@ def build_dataloader(dataset,
         batch_size = samples_per_gpu
         num_workers = workers_per_gpu
     else:
-        # sampler = MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
-        sampler = None
+        if dataset.split == './train':
+            sampler = MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
+        else:
+            sampler = None
         shuffle = False
         batch_size = num_gpus * samples_per_gpu
         num_workers = num_gpus * workers_per_gpu

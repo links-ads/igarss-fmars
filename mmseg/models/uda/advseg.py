@@ -18,7 +18,7 @@ from mmseg.models.uda.masking_consistency_module import \
     MaskingConsistencyModule
 from mmseg.models.uda.uda_decorator import UDADecorator
 from mmseg.models.utils.dacs_transforms import denorm, get_mean_std
-from mmseg.models.utils.visualization import prepare_debug_out, subplotimg
+from mmseg.models.utils.visualization import prepare_debug_out, subplotimg_daf
 from mmseg.ops import resize
 
 
@@ -58,6 +58,8 @@ class AdvSeg(UDADecorator):
 
         if self.mask_mode is not None:
             self.mic = MaskingConsistencyModule(require_teacher=True, cfg=cfg)
+        else:
+            self.mic = None
 
     def train_step(self, data_batch, optimizer, **kwargs):
         """The iteration step during training.
@@ -279,26 +281,26 @@ class AdvSeg(UDADecorator):
                         'left': 0
                     },
                 )
-                subplotimg(axs[0][0], vis_img[j], 'Source Image')
-                subplotimg(
+                subplotimg_daf(axs[0][0], vis_img[j], 'Source Image')
+                subplotimg_daf(
                     axs[0][1],
                     torch.argmax(pred['main'][j], dim=0),
                     'Source Seg',
                     cmap='cityscapes')
-                subplotimg(axs[1][0], vis_trg_img[j], 'Target Image')
-                subplotimg(
+                subplotimg_daf(axs[1][0], vis_trg_img[j], 'Target Image')
+                subplotimg_daf(
                     axs[1][1],
                     torch.argmax(pred_trg['main'][j], dim=0),
                     'Target Seg',
                     cmap='cityscapes')
-                subplotimg(
+                subplotimg_daf(
                     axs[0][2],
                     D_out_src[j],
                     'Source Discriminator',
                     vmin=0,
                     vmax=1,
                     cmap='viridis')
-                subplotimg(
+                subplotimg_daf(
                     axs[1][2],
                     D_out_trg[j],
                     'Target Discriminator',
@@ -331,10 +333,18 @@ class AdvSeg(UDADecorator):
                     )
                     for k1, (n1, outs) in enumerate(seg_debug.items()):
                         for k2, (n2, out) in enumerate(outs.items()):
-                            subplotimg(
-                                axs[k1][k2],
-                                **prepare_debug_out(f'{n1} {n2}', out[j],
-                                                    means, stds))
+                            # subplotimg_daf(
+                            #     axs[k1][k2],
+                            #     **prepare_debug_out(f'{n1} {n2}', out[j],
+                            #                         means, stds))
+                            if rows == 1 and cols == 1:
+                                subplotimg_daf(axs, **prepare_debug_out(f'{n1} {n2}', out[j], means, stds))
+                            elif rows == 1:
+                                subplotimg_daf(axs[k2], **prepare_debug_out(f'{n1} {n2}', out[j], means, stds))
+                            elif cols == 1:
+                                subplotimg_daf(axs[k1], **prepare_debug_out(f'{n1} {n2}', out[j], means, stds))
+                            else:
+                                subplotimg_daf(axs[k1][k2], **prepare_debug_out(f'{n1} {n2}', out[j], means, stds))
                     for ax in axs.flat:
                         ax.axis('off')
                     plt.savefig(

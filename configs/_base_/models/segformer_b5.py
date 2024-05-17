@@ -24,8 +24,16 @@ model = dict(
         align_corners=False,
         decoder_params=dict(embed_dim=768, conv_kernel_size=1),
         loss_decode=dict(
-            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0,
+            class_weight=[ # inverse of class frequency
+                1/0.964458,
+                1/0.013446,
+                1/0.011841,
+                10/0.010255,
+                ]
+            ),
+        ),
     # model training and testing settings
     train_cfg=dict(),
-    test_cfg=dict(mode='slide_cpu', crop_size=(640, 640), stride=(640, 640))
+    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(512, 512))
 )
