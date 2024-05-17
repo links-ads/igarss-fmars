@@ -110,20 +110,11 @@ class MaxarDataset(TifDataset):
 
 @DATASETS.register_module()
 class MaxarDsEntropy(MaxarDataset):
-    def __getitem__(self, idx_3d: tuple):
-        """Get training/test data after pipeline.
-
-        Args:
-            idx_3d (tuple): (img_idx, i, j)
-
-        Returns:
-            dict: Training/test data (with annotation if `test_mode` is set
-                False).
-        """
+    """def __getitem__(self, idx_3d: tuple):
         if self.test_mode:
             return self.prepare_test_img(idx_3d)
         else:
-            return self.prepare_train_img(idx_3d)
+            return self.prepare_train_img(idx_3d)"""
     
     def prepare_train_img(self, idx_3d):
         """Get training data and annotations after pipeline.

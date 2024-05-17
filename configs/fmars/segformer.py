@@ -1,7 +1,7 @@
 _base_ = [
     '../_base_/default_runtime.py',
     '../_base_/models/segformer_b5.py', 
-    '../_base_/datasets/maxar.py',
+    '../_base_/datasets/maxar_sampler.py',
     '../_base_/schedules/adamw.py',
     '../_base_/schedules/poly10warm.py'
 ]
@@ -16,7 +16,7 @@ optimizer = dict(
             pos_block=dict(decay_mult=0.0),
             norm=dict(decay_mult=0.0))))
 # n_gpus = 1
-runner = dict(type='IterBasedRunner', max_iters=4000)
+runner = dict(type='IterBasedRunner', max_iters=50000)
 # Logging Configuration
-checkpoint_config = dict(by_epoch=False, interval=40000, max_keep_ckpts=1, save_optimizer=True)
-evaluation = dict(interval=4, metric='mIoU', save_best='mIoU')
+checkpoint_config = dict(by_epoch=False, interval=1000000, max_keep_ckpts=1, save_optimizer=True)
+evaluation = dict(interval=20000, metric='mIoU', save_best='mIoU')

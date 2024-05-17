@@ -14,6 +14,23 @@ train_pipeline = [
                  meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg')
                 ),
             ]
+val_pipeline = [
+            dict(type='LoadTifFromFile'),
+            dict(
+                    type='MultiScaleFlipAug', 
+                    img_scale=crop_size, 
+                    flip=False,
+                    transforms=[
+                        dict(type='CenterCrop', crop_size=(1024, 1024)),
+                        dict(type='Normalize', **img_norm_cfg), 
+                        dict(type='ImageToTensor', keys=['img']),
+                        dict(type='Collect', 
+                            keys=['img'],
+                            meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'flip',)
+                        ),
+                    ]
+                )
+            ]
 test_pipeline = [
             dict(type='LoadTifFromFile'),
             dict(
@@ -35,7 +52,7 @@ data = dict(
     samples_per_gpu=batch_size,
     workers_per_gpu=batch_size,
     train=dict(
-        type='MaxarDsEntropy',
+        type='MaxarDataset', #TODO: here add MaxarDsEntropy
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
@@ -45,7 +62,7 @@ data = dict(
         pipeline=train_pipeline,
     ),
     val=dict(
-        type='MaxarDsEntropy',
+        type='MaxarDataset', #TODO: here try another dataset
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
@@ -55,7 +72,7 @@ data = dict(
         pipeline=test_pipeline,
     ),
     test=dict(
-        type='MaxarDsEntropy',
+        type='MaxarDataset', #TODO: here try another dataset
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
