@@ -33,7 +33,10 @@ class MaxarEntropySampler(Sampler):
             sampled_flat_index = np.random.choice(a=len(flat_probabilities), p=flat_probabilities)
             # Convert the flat index back to 3D index
             sampled_index_3d = np.unravel_index(sampled_flat_index, ev_patch_prob.shape)
-            print((start + sampled_index_3d[0], sampled_index_3d[1], sampled_index_3d[2]))
+            #print((start + sampled_index_3d[0], sampled_index_3d[1], sampled_index_3d[2]))
+            #print('Entropy at position ^')
+            #print(self.entropies[start + sampled_index_3d[0], sampled_index_3d[1], sampled_index_3d[2]])
+            #print()
             yield (start + sampled_index_3d[0], sampled_index_3d[1], sampled_index_3d[2])
     
     def __len__(self):
