@@ -200,7 +200,6 @@ class LoadTifFromFile(object):
             to_rgb=False)
         return results
     
-
 @PIPELINES.register_module()
 class LoadTifAnnotations(object):
     def __init__(self,
@@ -274,4 +273,51 @@ class LoadTifWindow(object):
             mean=np.zeros(num_channels, dtype=np.float32),
             std=np.ones(num_channels, dtype=np.float32),
             to_rgb=False)
+        return results
+    
+@PIPELINES.register_module()
+class ImageTifLoadIJ(LoadTifFromFile):    
+    def __call__(self, results):
+        if results.get('img_prefix') is not None:
+            filename = osp.join(results['img_prefix'],
+                                results['img_info']['filename'])
+        else:
+            filename = results['img_info']['filename']
+        i,j = results['local_idx']
+        with rio.open(filename) as src:
+            img = src.read(window = Window.from_slices((i*1024, (i+1)*1024), (j*1024, (j+1)*1024)))
+        if self.to_float32:
+            img = img.astype(np.float32)
+        # convert from c,h,w to h,w,c
+        img = np.moveaxis(img, 0, -1)
+        results['filename'] = filename
+        results['ori_filename'] = results['img_info']['filename']
+        results['img'] = img
+        results['img_shape'] = img.shape
+        results['ori_shape'] = img.shape
+        # Set initial values for default meta_keys
+        results['pad_shape'] = img.shape
+        results['scale_factor'] = 1.0
+        num_channels = 1 if len(img.shape) < 3 else img.shape[2]
+        results['img_norm_cfg'] = dict(
+            mean=np.zeros(num_channels, dtype=np.float32),
+            std=np.ones(num_channels, dtype=np.float32),
+            to_rgb=False)
+        return results
+
+@PIPELINES.register_module()
+class LableTifLoadIJ(LoadTifAnnotations):
+    def __call__(self, results):
+        if results.get('seg_prefix', None) is not None:
+            filename = osp.join(results['seg_prefix'],
+                                results['ann_info']['seg_map'])
+        else:
+            filename = results['ann_info']['seg_map']
+        
+        i,j = results['local_idx']
+        with rio.open(filename) as src:
+            gt_semantic_seg = src.read(window = Window.from_slices((i*1024, (i+1)*1024), (j*1024, (j+1)*1024)))
+        gt_semantic_seg = gt_semantic_seg[0]
+        results['gt_semantic_seg'] = gt_semantic_seg
+        results['seg_fields'].append('gt_semantic_seg')
         return results

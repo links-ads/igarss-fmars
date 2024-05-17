@@ -15,6 +15,7 @@ from mmcv.utils import Registry, build_from_cfg
 from torch.utils.data import DataLoader, DistributedSampler
 
 from mmseg.samplers.maxar_conditioned import MaxarConditionedSampler
+from mmseg.samplers.maxar_entropy import MaxarEntropySampler
 
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
@@ -138,7 +139,7 @@ def build_dataloader(dataset,
         num_workers = workers_per_gpu
     else:
         if dataset.split == './train':
-            sampler = MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
+            sampler = MaxarEntropySampler(dataset.num_event_imgs, all_train_paths = dataset.all_train_paths, seed = 0) #MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
         else:
             sampler = None
         shuffle = False

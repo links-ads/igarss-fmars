@@ -77,6 +77,7 @@ class MaxarDataset(TifDataset):
         glbl_img_count = 0
         folders = [f for f in os.listdir(
             ann_dir) if os.path.isdir(os.path.join(ann_dir, f))]
+        folders = sorted(folders)
         self.num_event_imgs = [] #las
         for folder in folders: # iterate over each event
             ann_folder = os.path.join(ann_dir, folder)
@@ -84,10 +85,12 @@ class MaxarDataset(TifDataset):
             # append 'pre/' to both
             ann_folder = os.path.join(ann_folder, 'pre/')
             img_folder = os.path.join(img_folder, 'pre/')
-            for mosaic in os.listdir(ann_folder): # iterate over each mosaic
+            
+            for mosaic in sorted(os.listdir(ann_folder)): # iterate over each mosaic
                 ann_mosaic_folder = os.path.join(ann_folder, mosaic)
                 img_mosaic_folder = os.path.join(img_folder, mosaic)
-                for tile in os.listdir(ann_mosaic_folder):
+                tif_files = [tif_file for tif_file in os.listdir(ann_mosaic_folder) if tif_file.endswith('.tif')]
+                for tile in sorted(tif_files):
                     ann_tile = os.path.join(ann_mosaic_folder, tile)
                     img_tile = os.path.join(img_mosaic_folder, tile)
                     # remove img_dir and ann_dir
@@ -102,5 +105,57 @@ class MaxarDataset(TifDataset):
                     glbl_img_count += 1
             if len(os.listdir(ann_mosaic_folder)) != 0:
                 self.num_event_imgs.append(glbl_img_count)
-                    
+        self.all_train_paths = [img_info['filename'] for img_info in img_infos]
         return img_infos
+
+@DATASETS.register_module()
+class MaxarDsEntropy(MaxarDataset):
+    def __getitem__(self, idx_3d: tuple):
+        """Get training/test data after pipeline.
+
+        Args:
+            idx_3d (tuple): (img_idx, i, j)
+
+        Returns:
+            dict: Training/test data (with annotation if `test_mode` is set
+                False).
+        """
+        if self.test_mode:
+            return self.prepare_test_img(idx_3d)
+        else:
+            return self.prepare_train_img(idx_3d)
+    
+    def prepare_train_img(self, idx_3d):
+        """Get training data and annotations after pipeline.
+
+        Args:
+            idx (int): Index of data.
+
+        Returns:
+            dict: Training data and annotation after pipeline with new keys
+                introduced by pipeline.
+        """
+        
+        idx, i, j = idx_3d
+        img_info = self.img_infos[idx]
+        ann_info = self.get_ann_info(idx)
+        results = dict(img_info=img_info, ann_info=ann_info, local_idx = (i, j))
+        self.pre_pipeline(results)
+        return self.pipeline(results)
+    
+    def prepare_test_img(self, idx_3d):
+        """Get testing data after pipeline.
+
+        Args:
+            idx (int): Index of data.
+
+        Returns:
+            dict: Testing data after pipeline with new keys introduced by
+                pipeline.
+        """
+
+        idx, i, j = idx_3d
+        img_info = self.img_infos[idx]
+        results = dict(img_info=img_info, local_idx = (i, j))
+        self.pre_pipeline(results)
+        return self.pipeline(results)
