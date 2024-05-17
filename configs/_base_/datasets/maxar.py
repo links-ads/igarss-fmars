@@ -20,7 +20,7 @@ val_pipeline = [
                     img_scale=crop_size, 
                     flip=False,
                     transforms=[
-                        dict(type='CenterCrop', crop_size=(2048,2048)),
+                        dict(type='CenterCrop', crop_size=(1024, 1024)),
                         dict(type='Normalize', **img_norm_cfg), 
                         dict(type='ImageToTensor', keys=['img']),
                         dict(type='Collect', 
@@ -66,7 +66,6 @@ data = dict(
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
         ann_dir = 'data/outputs/04_05/val/',
-        # ann_dir = 'data/outputs/19_4/val/',
         seg_map_suffix = '.tif',
         split = 'val',
         pipeline=val_pipeline,

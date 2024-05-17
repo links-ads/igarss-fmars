@@ -17,6 +17,7 @@ from torch.utils.data import DataLoader, DistributedSampler
 from mmseg.samplers.maxar_conditioned import MaxarConditionedSampler
 from mmseg.samplers.maxar_entropy import MaxarEntropySampler
 
+
 if platform.system() != 'Windows':
     # https://github.com/pytorch/pytorch/issues/973
     import resource
@@ -138,10 +139,15 @@ def build_dataloader(dataset,
         batch_size = samples_per_gpu
         num_workers = workers_per_gpu
     else:
-        if dataset.split == './train':
-            sampler = MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
-        else:
-            sampler = None
+        # check if dataset has source attribute
+        if hasattr(dataset, 'source'): # means that it is a UDADataset
+            sampler = MaxarConditionedSampler(dataset.source.num_event_imgs, seed = 0)
+        else: 
+            if dataset.split == './train':
+                # sampler = MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
+                sampler = None
+            else:
+                sampler = None
         shuffle = False
         batch_size = num_gpus * samples_per_gpu
         num_workers = num_gpus * workers_per_gpu

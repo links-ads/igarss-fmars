@@ -3,8 +3,8 @@ crop_size=(512,512)
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
-            dict(type='LoadTifAnnotations'),
-            dict(type='LoadTifWindow'),
+            dict(type='LoadTifWindowAnnotation'),
+            dict(type='LoadTifWindowImage'),
             dict(type='RandomCrop', crop_size=crop_size),
             dict(type='Normalize', **img_norm_cfg), 
             dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
@@ -13,6 +13,23 @@ train_pipeline = [
                  meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg')
                 ),
             ]
+val_pipeline = [
+            dict(type='LoadTifFromFile'),
+            dict(
+                    type='MultiScaleFlipAug', 
+                    img_scale=crop_size, 
+                    flip=False,
+                    transforms=[
+                        dict(type='CenterCrop', crop_size=(1024, 1024)),
+                        dict(type='Normalize', **img_norm_cfg), 
+                        dict(type='ImageToTensor', keys=['img']),
+                        dict(type='Collect', 
+                            keys=['img'],
+                            meta_keys=('filename', 'ori_filename', 'ori_shape', 'img_shape', 'pad_shape', 'scale_factor', 'img_norm_cfg', 'flip',)
+                        ),
+                    ]
+                )
+            ]
 test_pipeline = [
             dict(type='LoadTifFromFile'),
             dict(
@@ -20,7 +37,6 @@ test_pipeline = [
                     img_scale=crop_size, 
                     flip=False,
                     transforms=[
-                        dict(type='CenterCrop', crop_size=(1024,1024)),
                         dict(type='Normalize', **img_norm_cfg), 
                         dict(type='ImageToTensor', keys=['img']),
                         dict(type='Collect', 
@@ -32,8 +48,8 @@ test_pipeline = [
             ]
 
 data = dict(
-    samples_per_gpu=2,
-    workers_per_gpu=4,
+    samples_per_gpu=4,
+    workers_per_gpu=16,
     train=dict(
         type='MaxarDataset',
         data_root='./',
@@ -52,7 +68,7 @@ data = dict(
         ann_dir = 'data/outputs/04_05/val/',
         seg_map_suffix = '.tif',
         split = 'val',
-        pipeline=test_pipeline,
+        pipeline=val_pipeline,
     ),
     test=dict(
         type='MaxarDataset',

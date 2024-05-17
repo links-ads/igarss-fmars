@@ -232,9 +232,11 @@ class LoadTifAnnotations(object):
         repr_str += f'(reduce_zero_label={self.reduce_zero_label},'
         repr_str += f"imdecode_backend='{self.imdecode_backend}')"
         return repr_str
+    
+    
 
 @PIPELINES.register_module()
-class LoadTifWindow(object):
+class LoadTifWindowImage(object):
     def __init__(self,
                  to_float32=True,
                  color_type='color',
@@ -247,8 +249,7 @@ class LoadTifWindow(object):
         self.imdecode_backend = imdecode_backend
     
     def __call__(self, results):
-        lbl = results['gt_semantic_seg'] #TODO:check the shape
-        i,j = utils.get_weighted_random_idxs(utils.compute_entropy_matrix(lbl))
+        i,j = results['local_idx']
         if results.get('img_prefix') is not None:
             filename = osp.join(results['img_prefix'],
                                 results['img_info']['filename'])
@@ -274,6 +275,51 @@ class LoadTifWindow(object):
             std=np.ones(num_channels, dtype=np.float32),
             to_rgb=False)
         return results
+    
+    
+
+@PIPELINES.register_module()
+class LoadTifWindowAnnotation(object):
+    def __init__(self,
+                 reduce_zero_label=False,
+                 file_client_args=dict(backend='disk'),
+                 imdecode_backend='pillow'):
+        self.reduce_zero_label = reduce_zero_label
+        self.file_client_args = file_client_args.copy()
+        self.file_client = None
+        self.imdecode_backend = imdecode_backend
+
+    def __call__(self, results):
+        if results.get('seg_prefix', None) is not None:
+            filename = osp.join(results['seg_prefix'],
+                                results['ann_info']['seg_map'])
+        else:
+            filename = results['ann_info']['seg_map']
+        with rio.open(filename) as src:
+            gt_semantic_seg = src.read()
+        i,j = utils.get_weighted_random_idxs(utils.compute_entropy_matrix(gt_semantic_seg))
+        with rio.open(filename) as src:
+            gt_semantic_seg = src.read(window = Window.from_slices((i*1024, (i+1)*1024), (j*1024, (j+1)*1024)))
+        results['local_idx'] = (i,j)
+        gt_semantic_seg = gt_semantic_seg[0]
+        gt_semantic_seg = gt_semantic_seg + 1
+        # replace 256 with 0
+        gt_semantic_seg[gt_semantic_seg == 256] = 0
+        results['gt_semantic_seg'] = gt_semantic_seg
+        results['seg_fields'].append('gt_semantic_seg')
+        return results
+
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(reduce_zero_label={self.reduce_zero_label},'
+        repr_str += f"imdecode_backend='{self.imdecode_backend}')"
+        return repr_str
+    
+    
+    
+    
+    
+    
     
 @PIPELINES.register_module()
 class ImageTifLoadIJ(LoadTifFromFile):    

@@ -20,7 +20,7 @@ val_pipeline = [
                     img_scale=crop_size, 
                     flip=False,
                     transforms=[
-                        dict(type='CenterCrop', crop_size=(2048,2048)),
+                        dict(type='CenterCrop', crop_size=(1024, 1024)),
                         dict(type='Normalize', **img_norm_cfg), 
                         dict(type='ImageToTensor', keys=['img']),
                         dict(type='Collect', 
@@ -63,7 +63,7 @@ data = dict(
         pipeline=train_pipeline,
     ),
     val=dict(
-        type='MaxarDsEntropy',
+        type='MaxarDataset',
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
@@ -73,7 +73,7 @@ data = dict(
         pipeline=val_pipeline,
     ),
     test=dict(
-        type='MaxarDsEntropy',
+        type='MaxarDataset',
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',

@@ -4,7 +4,7 @@
 # yapf:disable
 log_config = dict(
     interval=1,
-    img_interval=10,
+    img_interval=1,
     hooks=[
         dict(type='TextLoggerHook', by_epoch=False),
         dict(type='TensorboardLoggerHook')
