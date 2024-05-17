@@ -164,3 +164,8 @@ notebooks/
 
 #drawio
 *.drawio
+
+#metadata
+*.csv
+*.json
+*.npy
