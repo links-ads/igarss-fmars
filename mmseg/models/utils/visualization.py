@@ -13,6 +13,10 @@ from PIL import Image
 from mmseg.models.utils.dacs_transforms import denorm
 
 Cityscapes_palette = [
+    0,0,0, 
+    128,128,128,
+    0,128,0,
+    128,0,0,
     128, 64, 128, 244, 35, 232, 70, 70, 70, 102, 102, 156, 190, 153, 153, 153,
     153, 153, 250, 170, 30, 220, 220, 0, 107, 142, 35, 152, 251, 152, 70, 130,
     180, 220, 20, 60, 255, 0, 0, 0, 0, 142, 0, 0, 70, 0, 60, 100, 0, 80, 100,
@@ -57,7 +61,7 @@ Cityscapes_palette = [
     64, 96, 160, 64, 224, 160, 64, 96, 32, 192, 224, 32, 192, 96, 160, 192,
     224, 160, 192, 32, 96, 64, 160, 96, 64, 32, 224, 64, 160, 224, 64, 32, 96,
     192, 160, 96, 192, 32, 224, 192, 160, 224, 192, 96, 96, 64, 224, 96, 64,
-    96, 224, 64, 224, 224, 64, 96, 96, 192, 224, 96, 192, 96, 224, 192, 0, 0, 0
+    96, 224, 64, 224, 224, 64, 
 ]
 
 
@@ -141,13 +145,20 @@ def subplotimg(ax,
             img = img.squeeze(0)
         elif img.shape[0] == 3:
             img = img.permute(1, 2, 0)
-            if not torch.is_tensor(img):
+            if torch.is_tensor(img):
                 img = img.numpy()
+            img = img[:, :, ::-1]
         if kwargs.get('cmap', '') == 'cityscapes':
             kwargs.pop('cmap')
             if torch.is_tensor(img):
                 img = img.numpy()
             img = colorize_mask(img, palette)
+        elif kwargs.get('cmap', '') == 'viridis':
+            kwargs.pop('cmap')
+            if torch.is_tensor(img):
+                img = img.numpy()
+            img = colorize_mask(img, palette)
+        
 
     if range_in_title:
         vmin = np.min(img)

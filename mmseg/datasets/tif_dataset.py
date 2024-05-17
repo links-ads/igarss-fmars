@@ -8,7 +8,8 @@ import rasterio as rio
 @DATASETS.register_module()
 class TifDataset(CustomDataset):
     CLASSES = ('background', 'road', 'tree', 'building',)
-    PALETTE = ([0, 0, 0], [128, 64, 128], [0, 128, 0], [70, 70, 70])
+    # background is black, road is gray, tree is green, building is red
+    PALETTE = ([0, 0, 0], [128, 128, 128], [0, 128, 0], [255, 0, 0])
 
     def load_annotations(self,
                          img_dir='data/maxar-open-data',
@@ -55,6 +56,8 @@ class TifDataset(CustomDataset):
             else:
                 with rio.open(seg_map) as src:
                     gt_seg_map = src.read()
+            gt_seg_map = gt_seg_map + 1
+            gt_seg_map[gt_seg_map == 256] = 0        
             gt_seg_maps.append(gt_seg_map[0])
         return gt_seg_maps
 

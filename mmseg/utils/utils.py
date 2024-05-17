@@ -27,9 +27,9 @@ def downscale_label_ratio(gt,
     assert orig_c == 1
     trg_h, trg_w = orig_h // scale_factor, orig_w // scale_factor
     ignore_substitute = n_classes
-
     out = gt.clone()  # otw. next line would modify original gt
     out[out == ignore_index] = ignore_substitute
+    out = out.long()
     out = F.one_hot(
         out.squeeze(1), num_classes=n_classes + 1).permute(0, 3, 1, 2)
     assert list(out.shape) == [bs, n_classes + 1, orig_h, orig_w], out.shape

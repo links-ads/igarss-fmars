@@ -8,9 +8,9 @@ _base_ = [
     # DAFormer Network Architecture
     '../_base_/models/daformer_sepaspp_mitb5.py',
     # GTA->Cityscapes High-Resolution Data Loading
-    '../_base_/datasets/maxar.py',
+    '../_base_/datasets/uda_maxar_to_maxar.py',
     # DAFormer Self-Training
-    '../_base_/uda/dacs_a999_fdthings.py',
+    '../_base_/uda/dacs.py',
     # AdamW Optimizer
     '../_base_/schedules/adamw.py',
     # Linear Learning Rate Warmup with Subsequent Linear Decay
@@ -47,28 +47,9 @@ model = dict(
         batched_slide=True,
         stride=[512, 512],
         crop_size=[1024, 1024]))
-# data = dict(
-#     train=dict(
-#         # Rare Class Sampling
-#         # min_crop_ratio=2.0 for HRDA instead of min_crop_ratio=0.5 for
-#         # DAFormer as HRDA is trained with twice the input resolution, which
-#         # means that the inputs have 4 times more pixels.
-#         rare_class_sampling=dict(
-#             min_pixels=3000, class_temp=0.01, min_crop_ratio=2.0),
-#         # Pseudo-Label Cropping v2 (from HRDA):
-#         # Generate mask of the pseudo-label margins in the data loader before
-#         # the image itself is cropped to ensure that the pseudo-label margins
-#         # are only masked out if the training crop is at the periphery of the
-#         # image.
-#         target=dict(crop_pseudo_margins=[30, 240, 30, 30]),
-#     ),
-#     # Use one separate thread/worker for data loading.
-#     workers_per_gpu=1,
-#     # Batch size
-#     samples_per_gpu=2,
-# )
 # MIC Parameters
 uda = dict(
+    alpha=0.999,
     # Apply masking to color-augmented target images
     mask_mode='separatetrgaug',
     # Use the same teacher alpha for MIC as for DAFormer
@@ -98,14 +79,3 @@ runner = dict(type='IterBasedRunner', max_iters=40000)
 # Logging Configuration
 checkpoint_config = dict(by_epoch=False, interval=40000, max_keep_ckpts=1)
 evaluation = dict(interval=4000, metric='mIoU')
-# # Meta Information for Result Analysis
-# name = 'gtaHR2csHR_mic_hrda_s2'
-# exp = 'basic'
-# name_dataset = 'gtaHR2cityscapesHR_1024x1024'
-# name_architecture = 'hrda1-512-0.1_daformer_sepaspp_sl_mitb5'
-# name_encoder = 'mitb5'
-# name_decoder = 'hrda1-512-0.1_daformer_sepaspp_sl'
-# name_uda = 'dacs_a999_fdthings_rcs0.01-2.0_cpl2_m64-0.7-spta'
-# name_opt = 'adamw_6e-05_pmTrue_poly10warm_1x2_40k'
-
-# For the other configurations used in the paper, please refer to experiment.py
