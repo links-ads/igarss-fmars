@@ -1,15 +1,10 @@
 _base_ = [
     '../_base_/default_runtime.py',
-    # DAFormer Network Architecture
     '../_base_/models/daformer_sepaspp_mitb5.py',
-    # GTA->Cityscapes High-Resolution Data Loading
     '../_base_/datasets/uda_maxar_to_maxar.py',
-    # DAFormer Self-Training
     '../_base_/uda/dacs.py',
-    # AdamW Optimizer
     '../_base_/schedules/adamw.py',
-    # Linear Learning Rate Warmup with Subsequent Linear Decay
-    '../_base_/schedules/poly10warm.py'
+ #    '../_base_/schedules/poly10warm.py'
 ]
 # Random Seed
 seed = 2  # seed with median performance
@@ -62,14 +57,18 @@ uda = dict(
 # Optimizer Hyperparameters
 optimizer_config = None
 optimizer = dict(
-    lr=6e-05,
-    paramwise_cfg=dict(
-        custom_keys=dict(
-            head=dict(lr_mult=10.0),
-            pos_block=dict(decay_mult=0.0),
-            norm=dict(decay_mult=0.0))))
+    lr=1e-57,
+    #paramwise_cfg=dict(
+    #    custom_keys=dict(
+    #        head=dict(lr_mult=10.0),
+    #        pos_block=dict(decay_mult=0.0),
+    #        norm=dict(decay_mult=0.0)))
+    )
+
+lr_config = dict(policy='fixed')
+
 
 runner = dict(type='IterBasedRunner', max_iters=50000)
 # Logging Configuration
 checkpoint_config = dict(by_epoch=False, interval=4000000, max_keep_ckpts=1)
-evaluation = dict(interval=1000, metric='mIoU', save_best='mIoU')
+evaluation = dict(interval=100, metric='mIoU', save_best='mIoU')

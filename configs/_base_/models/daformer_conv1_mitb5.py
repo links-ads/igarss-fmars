@@ -12,8 +12,8 @@ norm_cfg = dict(type='BN', requires_grad=True)
 find_unused_parameters = True
 model = dict(
     type='EncoderDecoder',
-    # pretrained='pretrained/mit_b5.pth',
-    pretrained=None,
+    pretrained='pretrained/mit_b5.pth',
+    # pretrained=None,
     backbone=dict(type='mit_b5', style='pytorch'),
     decode_head=dict(
         type='DAFormerHead',
