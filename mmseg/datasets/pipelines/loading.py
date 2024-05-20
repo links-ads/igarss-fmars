@@ -364,6 +364,9 @@ class LableTifLoadIJ(LoadTifAnnotations):
         with rio.open(filename) as src:
             gt_semantic_seg = src.read(window = Window.from_slices((i*1024, (i+1)*1024), (j*1024, (j+1)*1024)))
         gt_semantic_seg = gt_semantic_seg[0]
+        gt_semantic_seg = gt_semantic_seg + 1
+        # replace 256 with 0
+        gt_semantic_seg[gt_semantic_seg == 256] = 0
         results['gt_semantic_seg'] = gt_semantic_seg
         results['seg_fields'].append('gt_semantic_seg')
         return results

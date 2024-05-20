@@ -169,3 +169,6 @@ notebooks/
 *.csv
 *.json
 *.npy
+
+#recycle bin
+rec_bin/
