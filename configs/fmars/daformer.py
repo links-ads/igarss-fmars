@@ -17,9 +17,11 @@ uda = dict(
     imnet_feature_dist_classes=None,
     imnet_feature_dist_scale_min_ratio=None,
     # Pseudo-Label Crop
-    pseudo_weight_ignore_top=15,
-    pseudo_weight_ignore_bottom=120
+    pseudo_weight_ignore_top=0,
+    pseudo_weight_ignore_bottom=0
     )
+
+# missing RCS 
 
 optimizer_config = None
 optimizer = dict(

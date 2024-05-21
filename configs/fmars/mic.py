@@ -6,8 +6,8 @@ _base_ = [
     '../_base_/schedules/adamw.py',
  #    '../_base_/schedules/poly10warm.py'
 ]
-# Random Seed
 seed = 2  # seed with median performance
+
 # HRDA Configuration
 model = dict(
     type='HRDAEncoderDecoder',
@@ -37,6 +37,7 @@ model = dict(
         batched_slide=True,
         stride=[512, 512],
         crop_size=[1024, 1024]))
+
 # MIC Parameters
 uda = dict(
     alpha=0.999,
@@ -54,19 +55,19 @@ uda = dict(
     # and a mask ratio of 0.7
     mask_generator=dict(
         type='block', mask_ratio=0.7, mask_block_size=64, _delete_=True))
+
+
 # Optimizer Hyperparameters
 optimizer_config = None
 optimizer = dict(
-    lr=1e-57,
-    #paramwise_cfg=dict(
-    #    custom_keys=dict(
-    #        head=dict(lr_mult=10.0),
-    #        pos_block=dict(decay_mult=0.0),
-    #        norm=dict(decay_mult=0.0)))
+    lr=1e-5,
+    paramwise_cfg=dict(
+        custom_keys=dict(
+            head=dict(lr_mult=10.0),
+            pos_block=dict(decay_mult=0.0),
+            norm=dict(decay_mult=0.0)))
     )
-
 lr_config = dict(policy='fixed')
-
 
 runner = dict(type='IterBasedRunner', max_iters=50000)
 # Logging Configuration
