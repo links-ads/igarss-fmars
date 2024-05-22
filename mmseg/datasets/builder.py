@@ -144,6 +144,7 @@ def build_dataloader(dataset,
         if hasattr(dataset, 'source'): # means that it is a UDADataset
             if isinstance(dataset.source, DATASETS.get('MaxarDataset')):
                 #take all the attribute from the source dataset
+                
                 sampler = UDAEntropyIJSampler(dataset.source.num_event_imgs, all_train_paths = dataset.source.all_train_paths, seed = 1)
                 shuffle = False
             else:

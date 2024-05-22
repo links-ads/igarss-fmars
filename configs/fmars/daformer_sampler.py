@@ -1,7 +1,7 @@
 _base_ = [
     "../_base_/default_runtime.py",
     "../_base_/models/daformer_sepaspp_mitb5.py",
-    "../_base_/datasets/uda_maxar_to_maxar.py",
+    "../_base_/datasets/uda_maxar_to_maxar_entropy.py",
     "../_base_/uda/dacs.py",
     "../_base_/schedules/adamw.py",
     "../_base_/schedules/poly10warm.py",
@@ -26,8 +26,8 @@ optimizer = dict(
 data = dict(samples_per_gpu=4, workers_per_gpu=16)
 runner = dict(type="IterBasedRunner", max_iters=100000)
 # Logging Configuration
-checkpoint_config = dict(by_epoch=False, interval=5000, max_keep_ckpts=4)
-evaluation = dict(interval=5000, metric="mIoU", save_best="mIoU", ignore_index=[0,])
+checkpoint_config = dict(by_epoch=False, interval=5000, max_keep_ckpts=20)
+evaluation = dict(interval=5000, metric="mIoU", save_best="mIoU")
 
 
 name = "daformer_basic"
