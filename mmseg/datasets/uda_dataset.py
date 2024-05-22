@@ -16,6 +16,8 @@ from mmcv.parallel import DataContainer as DC
 from . import CityscapesDataset
 from .builder import DATASETS
 
+from mmseg.datasets.tif_dataset import MaxarDataset
+
 
 def get_rcs_class_probs(data_root, temperature):
     with open(osp.join(data_root, 'sample_class_stats.json'), 'r') as of:
@@ -157,21 +159,20 @@ class UDADataset(object):
         if 'valid_pseudo_mask' in s2:
             out['valid_pseudo_mask'] = s2['valid_pseudo_mask']
         return out
-
+        
     def __getitem__(self, idx):
-        if self.rcs_enabled:
-            return self.get_rare_class_sample()
-        else:
-            s1 = self.source[idx // len(self.target)]
-            s2 = self.target[idx % len(self.target)]
-            s1, s2 = self.synchronized_crop(s1, s2)
-            out = {
-                **s1, 'target_img_metas': s2['img_metas'],
-                'target_img': s2['img']
-            }
-            if 'valid_pseudo_mask' in s2:
-                out['valid_pseudo_mask'] = s2['valid_pseudo_mask']
-            return out
+        source_idx = idx[0]
+        target_idx = idx[1]
+        s1 = self.source[source_idx]
+        s2 = self.target[target_idx]
+        s1, s2 = self.synchronized_crop(s1, s2)
+        out = {
+            **s1, 'target_img_metas': s2['img_metas'],
+            'target_img': s2['img']
+        }
+        if 'valid_pseudo_mask' in s2:
+            out['valid_pseudo_mask'] = s2['valid_pseudo_mask']
+        return out
 
     def __len__(self):
         return len(self.source) * len(self.target)

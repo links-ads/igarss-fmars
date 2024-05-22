@@ -16,6 +16,7 @@ from torch.utils.data import DataLoader, DistributedSampler
 
 from mmseg.samplers.maxar_conditioned import MaxarConditionedSampler
 from mmseg.samplers.maxar_entropy import MaxarEntropySampler
+from mmseg.samplers.uda_entropy_ij import UDAEntropyIJSampler
 
 
 if platform.system() != 'Windows':
@@ -141,17 +142,20 @@ def build_dataloader(dataset,
     else:
         # check if dataset has source attribute
         if hasattr(dataset, 'source'): # means that it is a UDADataset
-            # sampler = MaxarConditionedSampler(dataset.source.num_event_imgs, seed = 0)
-            # shuffle = False
-            sampler = None
-            shuffle = True
-        else: 
-            if dataset.split == './train':
-                # sampler = MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
-                sampler = MaxarEntropySampler(dataset.num_event_imgs, all_train_paths = dataset.all_train_paths, seed = 0)
+            if isinstance(dataset.source, DATASETS.get('MaxarDataset')):
+                #take all the attribute from the source dataset
+                sampler = UDAEntropyIJSampler(dataset.source.num_event_imgs, all_train_paths = dataset.source.all_train_paths, seed = 1)
                 shuffle = False
             else:
                 sampler = None
+                shuffle = True
+        else: 
+            if dataset.split == './train':
+                sampler = MaxarEntropySampler(dataset.num_event_imgs, all_train_paths = dataset.all_train_paths, seed = 0) #MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
+                shuffle = False
+            else:
+                sampler = None
+                shuffle = True
         batch_size = num_gpus * samples_per_gpu
         num_workers = num_gpus * workers_per_gpu
 
