@@ -11,7 +11,7 @@ seed = 0
 
 optimizer_config = None
 optimizer = dict(
-    lr=1e-05,
+    lr=6e-05,
     paramwise_cfg=dict(
         custom_keys=dict(
             head=dict(lr_mult=10.0),
@@ -21,11 +21,13 @@ optimizer = dict(
     ),
 )
 
-data = dict(samples_per_gpu=2, workers_per_gpu=1)
-runner = dict(type="IterBasedRunner", max_iters=40000)
+# lr_config = dict(policy='fixed')
+
+data = dict(samples_per_gpu=4, workers_per_gpu=16)
+runner = dict(type="IterBasedRunner", max_iters=100000)
 # Logging Configuration
-checkpoint_config = dict(by_epoch=False, interval=10000, max_keep_ckpts=4)
-evaluation = dict(interval=1000, metric="mIoU")
+checkpoint_config = dict(by_epoch=False, interval=5000, max_keep_ckpts=4)
+evaluation = dict(interval=5000, metric="mIoU", save_best="mIoU", ignore_index=[0,])
 
 
 name = "daformer_basic"

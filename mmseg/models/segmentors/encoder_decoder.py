@@ -299,6 +299,7 @@ class EncoderDecoder(BaseSegmentor):
             crop_imgs, crops = [], []
             for h_idx in range(h_grids):
                 for w_idx in range(w_grids):
+                    print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
                     y1 = h_idx * h_stride
                     x1 = w_idx * w_stride
                     y2 = min(y1 + h_crop, h_img)
@@ -322,6 +323,7 @@ class EncoderDecoder(BaseSegmentor):
         else:
             for h_idx in range(h_grids):
                 for w_idx in range(w_grids):
+                    print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
                     y1 = h_idx * h_stride
                     x1 = w_idx * w_stride
                     y2 = min(y1 + h_crop, h_img)
@@ -373,7 +375,7 @@ class EncoderDecoder(BaseSegmentor):
             crop_imgs, crops = [], []
             for h_idx in range(h_grids):
                 for w_idx in range(w_grids):
-                    # print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
+                    print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
                     y1 = h_idx * h_stride
                     x1 = w_idx * w_stride
                     y2 = min(y1 + h_crop, h_img)
@@ -397,7 +399,7 @@ class EncoderDecoder(BaseSegmentor):
         else:
             for h_idx in range(h_grids):
                 for w_idx in range(w_grids):
-                    # print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
+                    print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
                     y1 = h_idx * h_stride
                     x1 = w_idx * w_stride
                     y2 = min(y1 + h_crop, h_img)
@@ -491,6 +493,18 @@ class EncoderDecoder(BaseSegmentor):
         # move seg_logit to cpu, to avoid crashes at the argmax step
         print('Moving seg_logit to cpu')
         seg_logit = seg_logit.cpu()
+        
+        # get the max along the channel dimension
+        seg_logit_max = seg_logit.max(dim=1).values
+        seg_logit = seg_logit.squeeze() # shape (C, H, W)
+        seg_logit_max = seg_logit_max.squeeze() # shape (H, W)
+        # if seg_logit_max is > 0.9, set seg_logit[0] to 1, else 0
+        # copy seg_logit to avoid modifying the original tensor
+        seg_logit_bg = seg_logit[0]
+        seg_logit_bg = torch.where(seg_logit_max < 0.75, 1, 0) # threshold here
+        seg_logit[0] = seg_logit_bg
+        seg_logit = seg_logit.unsqueeze(0) # shape (1, C, H, W)
+        
         if hasattr(self.decode_head, 'debug_output_attention') and \
                 self.decode_head.debug_output_attention:
             seg_pred = seg_logit[:, 0]
