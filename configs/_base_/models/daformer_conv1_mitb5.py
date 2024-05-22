@@ -35,7 +35,16 @@ model = dict(
                 norm_cfg=norm_cfg),
         ),
         loss_decode=dict(
-            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0)),
+            type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0,
+            class_weight=[ # inverse of class frequency
+                # 1/0.964458,
+                0,
+                1/0.013446,
+                1/0.011841,
+                1/0.010255,
+                ]
+            ),
+        ),
     # model training and testing settings
     train_cfg=dict(),
     test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(512, 512))

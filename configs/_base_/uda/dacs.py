@@ -6,26 +6,22 @@
 # ---------------------------------------------------------------
 
 # Baseline UDA
-
 uda = dict(
-    type='AdvSeg',
-    discriminator_type='LS',
-    lr_D=1e-4,
-    lr_D_power=0.9,
-    lr_D_min=0,
-    lambda_adv_target=dict(main=0.001, aux=0.0002),
-    debug_img_interval=1000,
-    # MIC params (inactive as mask_mode=None)
-    alpha=0.999,
-    mask_alpha='same',
-    mask_pseudo_threshold='same',
+    type="DACS",
+    source_only=False,
+    alpha=0.99,
     pseudo_threshold=0.968,
     pseudo_weight_ignore_top=0,
     pseudo_weight_ignore_bottom=0,
+    mix="class",
     blur=True,
     color_jitter_strength=0.2,
     color_jitter_probability=0.2,
     mask_mode=None,
+    mask_alpha="same",
+    mask_pseudo_threshold="same",
     mask_lambda=0,
     mask_generator=None,
+    debug_img_interval=1000,
+    print_grad_magnitude=False,
 )

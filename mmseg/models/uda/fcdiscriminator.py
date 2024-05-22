@@ -6,9 +6,8 @@ from torch import nn
 
 
 class FCDiscriminator(nn.Module):
-
     def __init__(self, num_classes, ndf=64):
-        super(FCDiscriminator, self).__init__()
+        super().__init__()
 
         conv_args = dict(kernel_size=4, stride=2, padding=1)
         self.conv1 = nn.Conv2d(num_classes, ndf, **conv_args)

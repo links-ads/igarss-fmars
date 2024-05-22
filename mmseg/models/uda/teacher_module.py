@@ -16,20 +16,19 @@ from mmseg.models.uda.uda_decorator import get_module
 
 
 class EMATeacher(Module):
-
     def __init__(self, use_mask_params, cfg):
-        super(EMATeacher, self).__init__()
-        prefix = 'mask_' if use_mask_params else ''
-        self.alpha = cfg[f'{prefix}alpha']
-        if self.alpha == 'same':
-            self.alpha = cfg['alpha']
-        self.pseudo_threshold = cfg[f'{prefix}pseudo_threshold']
-        if self.pseudo_threshold == 'same':
-            self.pseudo_threshold = cfg['pseudo_threshold']
-        self.psweight_ignore_top = cfg['pseudo_weight_ignore_top']
-        self.psweight_ignore_bottom = cfg['pseudo_weight_ignore_bottom']
+        super().__init__()
+        prefix = "mask_" if use_mask_params else ""
+        self.alpha = cfg[f"{prefix}alpha"]
+        if self.alpha == "same":
+            self.alpha = cfg["alpha"]
+        self.pseudo_threshold = cfg[f"{prefix}pseudo_threshold"]
+        if self.pseudo_threshold == "same":
+            self.pseudo_threshold = cfg["pseudo_threshold"]
+        self.psweight_ignore_top = cfg["pseudo_weight_ignore_top"]
+        self.psweight_ignore_bottom = cfg["pseudo_weight_ignore_bottom"]
 
-        ema_cfg = deepcopy(cfg['model'])
+        ema_cfg = deepcopy(cfg["model"])
         self.ema_model = build_segmentor(ema_cfg)
 
         self.debug = False
@@ -51,16 +50,11 @@ class EMATeacher(Module):
 
     def _update_ema(self, model, iter):
         alpha_teacher = min(1 - 1 / (iter + 1), self.alpha)
-        for ema_param, param in zip(self.get_ema_model().parameters(),
-                                    model.parameters()):
+        for ema_param, param in zip(self.get_ema_model().parameters(), model.parameters()):
             if not param.data.shape:  # scalar tensor
-                ema_param.data = \
-                    alpha_teacher * ema_param.data + \
-                    (1 - alpha_teacher) * param.data
+                ema_param.data = alpha_teacher * ema_param.data + (1 - alpha_teacher) * param.data
             else:
-                ema_param.data[:] = \
-                    alpha_teacher * ema_param[:].data[:] + \
-                    (1 - alpha_teacher) * param[:].data[:]
+                ema_param.data[:] = alpha_teacher * ema_param[:].data[:] + (1 - alpha_teacher) * param[:].data[:]
 
     def update_debug_state(self):
         self.get_ema_model().automatic_debug = False
@@ -73,8 +67,7 @@ class EMATeacher(Module):
             ps_large_p = pseudo_prob.ge(self.pseudo_threshold).long() == 1
             ps_size = np.size(np.array(pseudo_label.cpu()))
             pseudo_weight = torch.sum(ps_large_p).item() / ps_size
-            pseudo_weight = pseudo_weight * torch.ones(
-                pseudo_prob.shape, device=logits.device)
+            pseudo_weight = pseudo_weight * torch.ones(pseudo_prob.shape, device=logits.device)
         else:
             pseudo_weight = torch.ones(pseudo_prob.shape, device=logits.device)
         return pseudo_label, pseudo_weight
@@ -85,10 +78,10 @@ class EMATeacher(Module):
             # rectification artifacts. This can lead to a pseudo-label
             # drift from sky towards building or traffic light.
             assert valid_pseudo_mask is None
-            pseudo_weight[:, :self.psweight_ignore_top, :] = 0
+            pseudo_weight[:, : self.psweight_ignore_top, :] = 0
         if self.psweight_ignore_bottom > 0:
             assert valid_pseudo_mask is None
-            pseudo_weight[:, -self.psweight_ignore_bottom:, :] = 0
+            pseudo_weight[:, -self.psweight_ignore_bottom :, :] = 0
         if valid_pseudo_mask is not None:
             pseudo_weight *= valid_pseudo_mask.squeeze(1)
         return pseudo_weight
@@ -113,15 +106,12 @@ class EMATeacher(Module):
                 m.training = False
             if isinstance(m, DropPath):
                 m.training = False
-        ema_logits = self.get_ema_model().generate_pseudo_label(
-            target_img, target_img_metas)
+        ema_logits = self.get_ema_model().generate_pseudo_label(target_img, target_img_metas)
 
-        pseudo_label, pseudo_weight = self.get_pseudo_label_and_weight(
-            ema_logits)
+        pseudo_label, pseudo_weight = self.get_pseudo_label_and_weight(ema_logits)
         del ema_logits
 
-        pseudo_weight = self.filter_valid_pseudo_region(
-            pseudo_weight, valid_pseudo_mask)
+        pseudo_weight = self.filter_valid_pseudo_region(pseudo_weight, valid_pseudo_mask)
 
         self.debug_output = self.ema_model.debug_output
 
