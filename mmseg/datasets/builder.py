@@ -71,9 +71,14 @@ def _concat_dataset(cfg, default_args=None):
 def build_dataset(cfg, default_args=None):
     """Build datasets."""
     from .dataset_wrappers import ConcatDataset, RepeatDataset
-    from mmseg.datasets import UDADataset
+    from mmseg.datasets import UDADataset, UDADatasetOld
     if cfg['type'] == 'UDADataset':
         dataset = UDADataset(
+            source=build_dataset(cfg['source'], default_args),
+            target=build_dataset(cfg['target'], default_args),
+            cfg=cfg)
+    elif cfg['type'] == 'UDADatasetOld':
+        dataset = UDADatasetOld(
             source=build_dataset(cfg['source'], default_args),
             target=build_dataset(cfg['target'], default_args),
             cfg=cfg)
@@ -142,9 +147,8 @@ def build_dataloader(dataset,
     else:
         # check if dataset has source attribute
         if hasattr(dataset, 'source'): # means that it is a UDADataset
-            if isinstance(dataset.source, DATASETS.get('MaxarDataset')):
+            if isinstance(dataset, DATASETS.get('UDADataset')):
                 #take all the attribute from the source dataset
-                
                 sampler = UDAEntropyIJSampler(dataset.source.num_event_imgs, all_train_paths = dataset.source.all_train_paths, seed = 1)
                 shuffle = False
             else:

@@ -24,11 +24,16 @@ srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O t
 
 # train
 srun --job-name=fmars --qos=high --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/mic.py
+srun --job-name=fmars --qos=high --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/mic_sampler.py
 srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/daformer.py
 
 # test
 srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/mic.py work_dirs/mic/latest.pth --eval mIoU --show-dir output_images/mic
 srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/mic.py work_dirs/segformer/latest.pth --out results.pkl --eval mIoU
+
+srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=16 python -B -O tools/test.py configs/fmars/mic_sampler_512.py work_dirs/mic_sampler_512/latest.pth --eval mIoU --show-dir output_images/mic_sampler_512
+srun --job-name=fmars --gres=gpu:1g.20gb:1 -p A100 --cpus-per-task=16 python -B -O tools/test.py configs/fmars/mic_sampler_512.py work_dirs/mic_sampler_512/latest.pth --eval mIoU --show-dir output_images/mic_sampler_512
+srun --job-name=fmars --gres=gpu:1 -p RTX --cpus-per-task=16 python -B -O tools/test.py configs/fmars/mic.py work_dirs/mic_sampler_512/latest.pth --eval mIoU --show-dir output_images/mic_sampler_512
 
 
 # tensorboard

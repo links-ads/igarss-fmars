@@ -344,7 +344,8 @@ class CustomDataset(Dataset):
             results,
             gt_seg_maps,
             num_classes,
-            self.ignore_index,
+            # self.ignore_index,
+            255,
             metric,
             label_map=self.label_map,
             reduce_zero_label=self.reduce_zero_label)

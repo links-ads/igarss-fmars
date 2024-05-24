@@ -10,7 +10,7 @@ from .dark_zurich import DarkZurichDataset
 from .dataset_wrappers import ConcatDataset, RepeatDataset
 from .gta import GTADataset
 from .synthia import SynthiaDataset
-from .uda_dataset import UDADataset
+from .uda_dataset import UDADataset, UDADatasetOld
 
 __all__ = [
     'CustomDataset',
@@ -27,4 +27,5 @@ __all__ = [
     'ACDCDataset',
     'DarkZurichDataset',
     'TifDataset',
+    'UDADatasetOld',
 ]

@@ -47,5 +47,5 @@ model = dict(
         ),
     # model training and testing settings
     train_cfg=dict(),
-    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(512, 512))
+    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(384, 384))
 )

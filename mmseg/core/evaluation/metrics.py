@@ -52,7 +52,6 @@ def intersect_and_union(pred_label,
          torch.Tensor: The prediction histogram on all classes.
          torch.Tensor: The ground truth histogram on all classes.
     """
-
     if isinstance(pred_label, str):
         pred_label = torch.from_numpy(np.load(pred_label))
     else:
@@ -283,6 +282,8 @@ def eval_metrics(results,
         ndarray: Per category accuracy, shape (num_classes, ).
         ndarray: Per category evaluation metrics, shape (num_classes, ).
     """
+    ignore_index=10 # TODO: put it in cfg
+
     if isinstance(metrics, str):
         metrics = [metrics]
     allowed_metrics = ['mIoU', 'mDice', 'mFscore']
