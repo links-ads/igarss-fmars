@@ -4,6 +4,10 @@ Dataset abd code for the paper *FMARS: Annotating Remote Sensing Images for Disa
 
 [![arXiv](https://img.shields.io/badge/arXiv-2210.10732-b31b1b.svg?style=flat-square)](https://arxiv.org/abs/2210.10732)
 
+> [!NOTE]  
+> Dataset available at [hf.co/datasets/links-ads/fmars-dataset](https://huggingface.co/datasets/links-ads/fmars-dataset).
+
+
 ## Environment Setup
 
 First, please install cuda version 11.0.3 available at [https://developer.nvidia.com/cuda-11-0-3-download-archive](https://developer.nvidia.com/cuda-11-0-3-download-archive). It is required to build mmcv-full later.
