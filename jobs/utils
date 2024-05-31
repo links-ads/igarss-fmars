@@ -16,7 +16,8 @@ srun --job-name=fmars --qos=high --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 
 srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/daformer.py
 
 # test
-srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/daformer_base.py work_dirs/daformer_base/latest.pth --eval mIoU --show-dir output_images/daformer_base_0.9
+srun --job-name=fmars --gres=gpu:1g.20gb:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/daformer_base.py work_dirs/daformer_base/latest.pth --eval mIoU --show-dir output_images/daformer_base_0.5
+srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/daformer_base.py work_dirs/daformer_base/latest.pth --eval mIoU --show-dir output_images/daformer_base_0.5
 srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/daformer_base.py work_dirs/daformer_base/latest.pth --eval mIoU --show-dir output_images/daformer_base
 
 
@@ -40,4 +41,4 @@ srun --job-name=fmars --gres=gpu:1 -p RTX --cpus-per-task=16 python -B -O tools/
 tensorboard --logdir=work_dirs/segformer/tf_logs --port=6066
 
 # tunnel
-srun --job-name=tunnel --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=20 --pty code tunnel
+srun --job-name=tunnel --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 --pty code tunnel

@@ -501,7 +501,7 @@ class EncoderDecoder(BaseSegmentor):
         # if seg_logit_max is > 0.9, set seg_logit[0] to 1, else 0
         # copy seg_logit to avoid modifying the original tensor
         seg_logit_bg = seg_logit[0]
-        seg_logit_bg = torch.where(seg_logit_max < 0.75, 1, 0) # threshold here
+        seg_logit_bg = torch.where(seg_logit_max < 0.5, 1, 0) # threshold here
         seg_logit[0] = seg_logit_bg
         seg_logit = seg_logit.unsqueeze(0) # shape (1, C, H, W)
         

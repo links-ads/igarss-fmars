@@ -62,9 +62,6 @@ class TifDataset(CustomDataset):
             # set gt_seg_map to 255 where aoi_mask is 0
             gt_seg_map[aoi_mask == 0] = 10
             gt_seg_maps.append(gt_seg_map)
-            # if there is a pixel == 255
-            if 255 in gt_seg_map:
-                print(f"Found 255 in {seg_map}")
         return gt_seg_maps
 
 @DATASETS.register_module()
