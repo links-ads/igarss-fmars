@@ -2,7 +2,7 @@
 
 Dataset abd code for the paper *FMARS: Annotating Remote Sensing Images for Disaster Management using Foundation Models*.
 
-[![arXiv](https://img.shields.io/badge/arXiv-2210.10732-b31b1b.svg?style=flat-square)](https://arxiv.org/abs/2210.10732)
+[![arXiv](https://img.shields.io/badge/arXiv-2405.20109-b31b1b.svg?style=flat-square)](https://arxiv.org/abs/2405.20109)
 
 > [!NOTE]  
 > Dataset available at [hf.co/datasets/links-ads/fmars-dataset](https://huggingface.co/datasets/links-ads/fmars-dataset).
