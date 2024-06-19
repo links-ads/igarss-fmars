@@ -2,6 +2,8 @@
 
 Dataset and code for the paper *FMARS: Annotating Remote Sensing Images for Disaster Management using Foundation Models*.
 
+![FMARS workflow](resources/annotation-flow.png)
+
 [![arXiv](https://img.shields.io/badge/arXiv-2405.20109-b31b1b.svg?style=flat-square)](https://arxiv.org/abs/2405.20109)
 
 > [!NOTE]  
