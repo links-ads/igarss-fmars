@@ -38,7 +38,7 @@ def single_gpu_test(model,
                     show=False,
                     out_dir=None,
                     efficient_test=False,
-                    opacity=0.5):
+                    opacity=1):
     """Test with single GPU.
 
     Args:
@@ -55,7 +55,7 @@ def single_gpu_test(model,
     Returns:
         list: The prediction results.
     """
-
+    opacity=1
     model.eval()
     results = []
     dataset = data_loader.dataset

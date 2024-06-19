@@ -118,7 +118,7 @@ def show_result_pyplot(model,
                        result,
                        palette=None,
                        fig_size=(15, 10),
-                       opacity=0.5,
+                       opacity=1,
                        title='',
                        block=True):
     """Visualize the segmentation results on the image.
@@ -139,6 +139,7 @@ def show_result_pyplot(model,
         block (bool): Whether to block the pyplot figure.
             Default is True.
     """
+    
     if hasattr(model, 'module'):
         model = model.module
     img = model.show_result(
