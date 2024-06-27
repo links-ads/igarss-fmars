@@ -25,7 +25,7 @@ model = dict(
     # the context crop.
     scales=[1, 0.5],
     # Use a relative crop size of 0.5 (=512/1024) for the detail crop.
-    hr_crop_size=(256, 256),
+    hr_crop_size=(512, 512),
     # Use LR features for the Feature Distance as in the original DAFormer.
     feature_scale=0.5,
     # Make the crop coordinates divisible by 8 (output stride = 4,
@@ -33,10 +33,6 @@ model = dict(
     crop_coord_divisible=8,
     # Use overlapping slide inference for detail crops for pseudo-labels.
     hr_slide_inference=True,
-    # Use overlapping slide inference for fused crops during test time.
-    test_cfg=dict(
-        stride=[512, 512],
-        crop_size=[512, 512])
 )
 
 # MIC Parameters

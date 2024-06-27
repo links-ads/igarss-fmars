@@ -37,8 +37,33 @@ from their [OneDrive](https://connecthkuhk-my.sharepoint.com/:f:/g/personal/xiee
 
 ## Installation and Use
 
-> [!WARNING]
-> TODO
+The dataset used for the training and testing can be generated via the Python package [igarss-fmars-gen](https://github.com/links-ads/igarss-fmars-gen). Both the original Maxar Open Data dataset and the annotations genereted by the package are needed. An example of data folder structure can be:
+
+```
+data/
+├── maxar-open-data/
+|   ├── afghanistan-earthquake22/
+|   ├── BayofBengal-Cyclone-Mocha-May-23/
+|   └── ...
+└── annotations/
+    ├── train/
+    |   ├── afghanistan-earthquake22/
+    |   ├── BayofBengal-Cyclone-Mocha-May-23/
+    |   └── ...	
+    ├── val/
+    |   ├── afghanistan-earthquake22/
+    |   ├── BayofBengal-Cyclone-Mocha-May-23/
+    |   └── ...	
+    └── test/
+        ├── afghanistan-earthquake22/
+        ├── BayofBengal-Cyclone-Mocha-May-23/
+        └── ...	
+``` 
+
+It's necessary for the images and the annotations to be in the correct events subfolders.
+
+The paths need to be specified in the configuration files under ``` configs/_base_/datasets/``` in the fields img_dirs and ann_dirs.
+
 
 ## Acknowledgements
 

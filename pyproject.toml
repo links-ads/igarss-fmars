@@ -47,7 +47,7 @@ test = [
 
 [tool.setuptools.dynamic]
 version = {attr = "mmseg.version.__version__"}
-dependencies = {file = "requirements.txt"}
+dependencies = {file = "req.txt"}
 
 [tool.setuptools.packages.find]
 where = [""]

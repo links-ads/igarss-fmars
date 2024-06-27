@@ -1,7 +1,7 @@
 _base_ = [
     "../_base_/default_runtime.py",
     "../_base_/models/daformer_sepaspp_mitb5.py",
-    "../_base_/datasets/uda_maxar_to_maxar_val.py",
+    "../_base_/datasets/uda_maxar_to_maxar_inference.py",
     "../_base_/uda/dacs.py",
     "../_base_/schedules/adamw.py",
     "../_base_/schedules/poly10warm.py",

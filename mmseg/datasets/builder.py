@@ -156,8 +156,12 @@ def build_dataloader(dataset,
                 shuffle = True
         else: 
             if dataset.split == './train':
-                sampler = MaxarEntropySampler(dataset.num_event_imgs, all_train_paths = dataset.all_train_paths, seed = 0) #MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
-                shuffle = False
+                if isinstance(dataset, DATASETS.get('MaxarDsEntropy')):
+                    sampler = MaxarEntropySampler(dataset.num_event_imgs, all_train_paths = dataset.all_train_paths, seed = 0) #MaxarConditionedSampler(dataset.num_event_imgs, seed = 0)
+                    shuffle = False
+                else: 
+                    sampler = None
+                    shuffle = True
             else:
                 sampler = None
                 shuffle = True

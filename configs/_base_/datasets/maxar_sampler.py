@@ -3,8 +3,8 @@ crop_size=(512,512)
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
-            dict(type='LoadTifWindowAnnotation'),
-            dict(type='LoadTifWindowImage'),
+            dict(type='ImageTifLoadIJ'),
+            dict(type='LableTifLoadIJ'),
             dict(type='RandomCrop', crop_size=crop_size),
             dict(type='Normalize', **img_norm_cfg), 
             dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
@@ -47,11 +47,13 @@ test_pipeline = [
                 )
             ]
 
+
+
 data = dict(
     samples_per_gpu=4,
     workers_per_gpu=16,
     train=dict(
-        type='MaxarDataset',
+        type='MaxarDsEntropy',
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',

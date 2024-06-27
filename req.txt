@@ -1,0 +1,11 @@
+kornia
+matplotlib
+prettytable
+rasterio
+scipy
+shapely
+tensorboard
+torch==1.8.0
+torchvision
+yapf==0.30.0
+mmcv-full==1.3.7 -f https://download.openmmlab.com/mmcv/dist/cu102/torch1.8.0/index.html

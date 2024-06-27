@@ -102,7 +102,6 @@ data = dict(
         img_dir="data/maxar-open-data/",
         img_suffix=".tif",
         ann_dir="data/outputs/04_05/val/",
-        # ann_dir="data/outputs/19_4/val/",
         seg_map_suffix=".tif",
         split="val",
         pipeline=val_pipeline,

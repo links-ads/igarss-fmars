@@ -1,7 +1,7 @@
 _base_ = [
     '../_base_/default_runtime.py',
     '../_base_/models/daformer_sepaspp_mitb5.py',
-    '../_base_/datasets/uda_maxar_to_maxar.py',
+    '../_base_/datasets/uda_maxar_to_maxar_inference.py',
     '../_base_/uda/dacs.py',
     '../_base_/schedules/adamw.py',
     '../_base_/schedules/poly10warm.py'
@@ -52,6 +52,10 @@ uda = dict(
     # and a mask ratio of 0.7
     mask_generator=dict(
         type='block', mask_ratio=0.7, mask_block_size=64, _delete_=True))
+
+# model = dict(
+#     test_cfg=dict(mode='whole'),
+# )
 
 
 optimizer_config = None
