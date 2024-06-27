@@ -163,10 +163,5 @@ results.pkl
 #drawio
 *.drawio
 
-#metadata
-*.csv
-*.json
-*.npy
-
 #recycle bin
 rec_bin/

@@ -1,44 +1,17 @@
 # segformer
-
 # train
-srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/segformer.py
-srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/segformer.py
-
+python -B -O tools/train.py configs/fmars/segformer.py
 # test
-srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/segformer.py work_dirs/segformer/best_mIoU_iter_16.pth --eval mIoU
-srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/segformer.py work_dirs/segformer/latest.pth --out results.pkl --eval mIoU
-
+python -B -O tools/test.py configs/fmars/segformer.py work_dirs/segformer/latest.pth --out results.pkl --eval mIoU
 
 # daformer
-
 # train
-srun --job-name=fmars --qos=high --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/daformer_base.py
-srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/daformer.py
-
+python -B -O tools/train.py configs/fmars/daformer.py
 # test
-srun --job-name=fmars --gres=gpu:1g.20gb:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/daformer_base.py work_dirs/daformer_base/latest.pth --eval mIoU --show-dir output_images/daformer_base_0.5
-srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/daformer_base.py work_dirs/daformer_base/latest.pth --eval mIoU --show-dir output_images/daformer_base_0.5
-srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/daformer_base.py work_dirs/daformer_base/latest.pth --eval mIoU --show-dir output_images/daformer_base
-
+python -B -O tools/test.py configs/fmars/daformer_base.py work_dirs/daformer_base/latest.pth --eval mIoU --show-dir output_images/daformer_base_0.5
 
 # mic
-
 # train
-srun --job-name=fmars --qos=high --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/mic.py
-srun --job-name=fmars --qos=high --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/mic_sampler.py
-srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O tools/train.py configs/fmars/daformer.py
-
+python -B -O tools/train.py configs/fmars/mic.py
 # test
-srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/mic.py work_dirs/mic/latest.pth --eval mIoU --show-dir output_images/mic
-srun --job-name=fmars --gres=gpu:a100:1 -p A100 --cpus-per-task=8 python -B -O tools/test.py configs/fmars/mic.py work_dirs/segformer/latest.pth --out results.pkl --eval mIoU
-
-srun --job-name=fmars --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=16 python -B -O tools/test.py configs/fmars/mic_sampler_512.py work_dirs/mic_sampler_512/latest.pth --eval mIoU --show-dir output_images/mic_sampler_512
-srun --job-name=fmars --gres=gpu:1g.20gb:1 -p A100 --cpus-per-task=16 python -B -O tools/test.py configs/fmars/mic_sampler_512.py work_dirs/mic_sampler_512/latest.pth --eval mIoU --show-dir output_images/mic_sampler_512
-srun --job-name=fmars --gres=gpu:1 -p RTX --cpus-per-task=16 python -B -O tools/test.py configs/fmars/mic.py work_dirs/mic_sampler_512/latest.pth --eval mIoU --show-dir output_images/mic_sampler_512
-
-
-# tensorboard
-tensorboard --logdir=work_dirs/segformer/tf_logs --port=6066
-
-# tunnel
-srun --job-name=tunnel --gres=gpu:3g.40gb:1 -p A100 --cpus-per-task=8 --pty code tunnel
+python -B -O tools/test.py configs/fmars/mic.py work_dirs/segformer/latest.pth --out results.pkl --eval mIoU

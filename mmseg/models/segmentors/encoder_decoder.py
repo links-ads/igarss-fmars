@@ -498,13 +498,11 @@ class EncoderDecoder(BaseSegmentor):
         seg_logit_max = seg_logit.max(dim=1).values
         seg_logit = seg_logit.squeeze() # shape (C, H, W)
         seg_logit_max = seg_logit_max.squeeze() # shape (H, W)
-        # if seg_logit_max is > 0.9, set seg_logit[0] to 1, else 0
         # copy seg_logit to avoid modifying the original tensor
         seg_logit_bg = seg_logit[0]
-        seg_logit_bg = torch.where(seg_logit_max < 0.5, 1, 0) # threshold here
+        seg_logit_bg = torch.where(seg_logit_max < self.test_cfg.threshold, 1, 0) # threshold here
         seg_logit[0] = seg_logit_bg
         seg_logit = seg_logit.unsqueeze(0) # shape (1, C, H, W)
-        
         if hasattr(self.decode_head, 'debug_output_attention') and \
                 self.decode_head.debug_output_attention:
             seg_pred = seg_logit[:, 0]
@@ -515,8 +513,6 @@ class EncoderDecoder(BaseSegmentor):
             seg_pred = seg_pred.unsqueeze(0)
             return seg_pred
         seg_pred = seg_pred.cpu().numpy()
-        # del seg_logit
-        # torch.cuda.empty_cache()
         # unravel batch dim
         seg_pred = list(seg_pred)
         return seg_pred
