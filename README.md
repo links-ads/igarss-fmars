@@ -3,12 +3,12 @@
 Code for the experiments from the paper *FMARS: Annotating Remote Sensing Images for Disaster Management using Foundation Models*.
 
 ![Samples](resources/qualitatives-02.png)
-*Sample results from the training of our models. In order from left to right: original images from the dataset, daformer model, mic model, pseudo label annotation generated with fmars.*
+*Qualitative results obtained over two example areas, namely USA (top) and Gambia (bottom). from left to right: RGB image, DAFormer, MIC, and FMARS ground truth. Best viewed zoomed in.*
 
 [![arXiv](https://img.shields.io/badge/arXiv-2405.20109-b31b1b.svg?style=flat-square)](https://arxiv.org/abs/2405.20109)
 
 > [!NOTE]  
-> Dataset available at [hf.co/datasets/links-ads/fmars-dataset](https://huggingface.co/datasets/links-ads/fmars-dataset).
+> The Dataset is available as [parquet files](https://huggingface.co/datasets/links-ads/fmars-dataset), to be rasterized, or can be generated with the package [igarss-fmars-gen](https://github.com/links-ads/igarss-fmars-gen).
 
 
 ## Environment Setup
@@ -40,7 +40,7 @@ from their [OneDrive](https://connecthkuhk-my.sharepoint.com/:f:/g/personal/xiee
 
 ### Dataset generation
 
-The dataset used for the training and testing can be generated via the Python package [igarss-fmars-gen](https://github.com/links-ads/igarss-fmars-gen). Both the original Maxar Open Data dataset and the annotations genereted by the package are needed. An example of data folder structure can be:
+The Dataset is available as [parquet files](https://huggingface.co/datasets/links-ads/fmars-dataset), to be rasterized, or can be generated with the package [igarss-fmars-gen](https://github.com/links-ads/igarss-fmars-gen) Both the original Maxar Open Data dataset and the annotations genereted with FMARS are needed. An example of data folder structure can be:
 
 ```
 data/
@@ -67,7 +67,7 @@ It's necessary for the images and the annotations to be in the correct events su
 
 ## Experiments
 
-To run the experiments reported in the paper, the following commands are used to train and test the three models.
+To run the experiments reported in the paper, the following commands are used to train and test the three models (SegFormer, DAFormer, MIC).
 
 ```
 python -B -O tools/train.py configs/fmars/segformer.py
