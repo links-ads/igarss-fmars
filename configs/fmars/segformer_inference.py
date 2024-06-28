@@ -17,9 +17,8 @@ optimizer = dict(
             norm=dict(decay_mult=0.0)))
 )
 
-# lr_config = dict(policy='fixed')
+runner = dict(type='IterBasedRunner', max_iters=30000)
 
-runner = dict(type='IterBasedRunner', max_iters=100000)
 # Logging Configuration
 checkpoint_config = dict(by_epoch=False, interval=5000, max_keep_ckpts=20)
 evaluation = dict(interval=5000, metric='mIoU', save_best='mIoU')

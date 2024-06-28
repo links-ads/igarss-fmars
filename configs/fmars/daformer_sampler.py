@@ -21,10 +21,9 @@ optimizer = dict(
     ),
 )
 
-# lr_config = dict(policy='fixed')
-
 data = dict(samples_per_gpu=4, workers_per_gpu=16)
-runner = dict(type="IterBasedRunner", max_iters=100000)
+runner = dict(type="IterBasedRunner", max_iters=30000)
+
 # Logging Configuration
 checkpoint_config = dict(by_epoch=False, interval=5000, max_keep_ckpts=20)
 evaluation = dict(interval=5000, metric="mIoU", save_best="mIoU")

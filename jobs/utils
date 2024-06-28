@@ -2,17 +2,17 @@
 # train
 python -B -O tools/train.py configs/fmars/segformer.py
 # test
-python -B -O tools/test.py configs/fmars/segformer.py work_dirs/segformer/latest.pth --out results.pkl --eval mIoU
+python -B -O tools/test.py configs/fmars/segformer.py work_dirs/segformer/iter_30000.pth --eval mIoU --show-dir output_images/segformer
 
 # daformer
 # train
-python -B -O tools/train.py configs/fmars/daformer.py
+python -B -O tools/train.py configs/fmars/daformer_sampler.py
 # test
-python -B -O tools/test.py configs/fmars/daformer_base.py work_dirs/daformer_base/latest.pth --eval mIoU --show-dir output_images/daformer_base_0.5
+python -B -O tools/test.py configs/fmars/daformer_sampler.py work_dirs/daformer_sampler/iter_30000.pth --eval mIoU --show-dir output_images/daformer_sampler
 
 # mic
 # train
-python -B -O tools/train.py configs/fmars/mic.py
+python -B -O tools/train.py configs/fmars/mic_sampler.py
 # test
-python -B -O tools/test.py configs/fmars/mic.py work_dirs/segformer/latest.pth --out results.pkl --eval mIoU
+python -B -O tools/test.py configs/fmars/mic_sampler.py work_dirs/mic_sampler/iter_30000.pth --eval mIoU --show-dir output_images/mic_sampler
 

@@ -35,7 +35,9 @@ pip install -e .
 Please, download the MiT-B5 ImageNet weights provided by [SegFormer](https://github.com/NVlabs/SegFormer?tab=readme-ov-file#training)
 from their [OneDrive](https://connecthkuhk-my.sharepoint.com/:f:/g/personal/xieenze_connect_hku_hk/EvOn3l1WyM5JpnMQFSEO5b8B7vrHw9kDaJGII-3N9KNhrg?e=cpydzZ) and put them in the folder `pretrained/`.
 
-## Installation and Use
+## Installation
+
+### Dataset generation
 
 The dataset used for the training and testing can be generated via the Python package [igarss-fmars-gen](https://github.com/links-ads/igarss-fmars-gen). Both the original Maxar Open Data dataset and the annotations genereted by the package are needed. An example of data folder structure can be:
 
@@ -60,10 +62,24 @@ data/
         └── ...	
 ``` 
 
-It's necessary for the images and the annotations to be in the correct events subfolders.
+It's necessary for the images and the annotations to be in the correct events subfolders. The paths need to be specified in the configuration files under ``` configs/_base_/datasets/``` in the fields ```img_dirs``` and ```ann_dirs```.
 
-The paths need to be specified in the configuration files under ``` configs/_base_/datasets/``` in the fields img_dirs and ann_dirs.
+## Experiments
 
+To run the experiments reported in the paper, the following commands are used to train and test the three models.
+
+```
+python -B -O tools/train.py configs/fmars/segformer.py
+python -B -O tools/test.py configs/fmars/segformer.py work_dirs/segformer/iter_30000.pth --eval mIoU --show-dir output_images/segformer
+
+python -B -O tools/train.py configs/fmars/daformer_sampler.py
+python -B -O tools/test.py configs/fmars/daformer_sampler.py work_dirs/daformer_sampler/iter_30000.pth --eval mIoU --show-dir output_images/daformer_sampler
+
+python -B -O tools/train.py configs/fmars/mic_sampler.py
+python -B -O tools/test.py configs/fmars/mic_sampler.py work_dirs/mic_sampler/iter_30000.pth --eval mIoU --show-dir output_images/mic_sampler
+```
+
+Additionally, in the ```configs/``` folder, alternative experiments are available, including the versions of the models trained ignoring the entropy based sampling.
 
 ## Acknowledgements
 
