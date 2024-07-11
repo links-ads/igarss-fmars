@@ -179,8 +179,8 @@ def main():
         init_dist(args.launcher, **cfg.dist_params)
 
     # build the dataloader
-    # TODO: support multiple images per gpu (only minor changes are needed)
-    dataset = build_dataset(cfg.data.test)
+    # TODO: support multiple images per gpu (only minor changes are needed)     
+    dataset = build_dataset(cfg.data.test)    
     data_loader = build_dataloader(
         dataset,
         samples_per_gpu=1,
@@ -213,19 +213,13 @@ def main():
     efficient_test = False
     if args.eval_options is not None:
         efficient_test = args.eval_options.get('efficient_test', False)
-
+    
     if not distributed:
         model = MMDataParallel(model, device_ids=[0])
-        outputs = single_gpu_test(model, data_loader, args.show, args.show_dir,
+        outputs, img_order = single_gpu_test(model, data_loader, args.show, args.show_dir,
                                   efficient_test, args.opacity)
     else:
-        model = MMDistributedDataParallel(
-            model.cuda(),
-            device_ids=[torch.cuda.current_device()],
-            broadcast_buffers=False)
-        outputs = multi_gpu_test(model, data_loader, args.tmpdir,
-                                 args.gpu_collect, efficient_test)
-
+        raise NotImplementedError('Distributed test is not supported.')
     rank, _ = get_dist_info()
     if rank == 0:
         if args.out:
@@ -235,7 +229,7 @@ def main():
         if args.format_only:
             dataset.format_results(outputs, **kwargs)
         if args.eval:
-            res = dataset.evaluate(outputs, args.eval, **kwargs)
+            res = dataset.evaluate(outputs, args.eval, **kwargs, img_order=img_order)
             print([k for k, v in res.items() if 'IoU' in k])
             print([round(v * 100, 1) for k, v in res.items() if 'IoU' in k])
 

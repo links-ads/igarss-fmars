@@ -313,13 +313,7 @@ class LoadTifWindowAnnotation(object):
         repr_str = self.__class__.__name__
         repr_str += f'(reduce_zero_label={self.reduce_zero_label},'
         repr_str += f"imdecode_backend='{self.imdecode_backend}')"
-        return repr_str
-    
-    
-    
-    
-    
-    
+        return repr_str    
     
 @PIPELINES.register_module()
 class ImageTifLoadIJ(LoadTifFromFile):    
@@ -359,7 +353,6 @@ class LableTifLoadIJ(LoadTifAnnotations):
                                 results['ann_info']['seg_map'])
         else:
             filename = results['ann_info']['seg_map']
-        
         i,j = results['local_idx']
         with rio.open(filename) as src:
             gt_semantic_seg = src.read(window = Window.from_slices((i*1024, (i+1)*1024), (j*1024, (j+1)*1024)))

@@ -28,5 +28,4 @@ runner = dict(type="IterBasedRunner", max_iters=30000)
 checkpoint_config = dict(by_epoch=False, interval=5000, max_keep_ckpts=20)
 evaluation = dict(interval=5000, metric="mIoU", save_best="mIoU")
 
-
 name = "daformer_basic"

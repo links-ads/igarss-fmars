@@ -165,3 +165,6 @@ results.pkl
 
 #recycle bin
 rec_bin/
+
+# metadata
+metadata/

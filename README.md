@@ -11,7 +11,9 @@ Code for the experiments from the paper *FMARS: Annotating Remote Sensing Images
 > The Dataset is available as [parquet files](https://huggingface.co/datasets/links-ads/fmars-dataset), to be rasterized, or can be generated with the package [igarss-fmars-gen](https://github.com/links-ads/igarss-fmars-gen).
 
 
-## Environment Setup
+## Installation
+
+### Environment Setup
 
 First, please install cuda version 11.0.3 available at [https://developer.nvidia.com/cuda-11-0-3-download-archive](https://developer.nvidia.com/cuda-11-0-3-download-archive). It is required to build mmcv-full later.
 
@@ -36,7 +38,14 @@ pip install -e .
 Please, download the MiT-B5 ImageNet weights provided by [SegFormer](https://github.com/NVlabs/SegFormer?tab=readme-ov-file#training)
 from their [OneDrive](https://connecthkuhk-my.sharepoint.com/:f:/g/personal/xieenze_connect_hku_hk/EvOn3l1WyM5JpnMQFSEO5b8B7vrHw9kDaJGII-3N9KNhrg?e=cpydzZ) and put them in the folder `pretrained/`.
 
-## Installation
+### Metadata 
+
+Download necessary metadata using:
+```shell
+wget -q https://github.com/links-ads/igarss-fmars-gen/releases/download/v0.1.0/metadata.zip
+unzip metadata.zip
+rm metadata.zip
+```
 
 ### Dataset generation
 

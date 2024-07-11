@@ -1,7 +1,7 @@
 _base_ = [
     '../_base_/default_runtime.py',
-    '../_base_/models/segformer_b5.py', 
-    '../_base_/datasets/maxar_sampler.py',
+    '../_base_/models/segformer_b3.py', 
+    '../_base_/datasets/maxar.py',
     '../_base_/schedules/adamw.py',
     '../_base_/schedules/poly10warm.py'
 ]

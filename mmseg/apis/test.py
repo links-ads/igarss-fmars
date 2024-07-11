@@ -60,10 +60,14 @@ def single_gpu_test(model,
     results = []
     dataset = data_loader.dataset
     prog_bar = mmcv.ProgressBar(len(dataset))
+    img_order = []
     if efficient_test:
         mmcv.mkdir_or_exist('.efficient_test')
     for i, data in enumerate(data_loader):
+        
         with torch.no_grad():
+            print(data['img_metas'][0].data[0][0]['filename']) # TODO: remove
+            img_order.append(data['img_metas'][0].data[0][0]['ori_filename'])
             result = model(return_loss=False, **data)
 
         if show or out_dir:
@@ -110,7 +114,7 @@ def single_gpu_test(model,
         batch_size = len(result)
         for _ in range(batch_size):
             prog_bar.update()
-    return results
+    return results, img_order
 
 
 def multi_gpu_test(model,

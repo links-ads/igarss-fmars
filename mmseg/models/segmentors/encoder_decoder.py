@@ -298,8 +298,8 @@ class EncoderDecoder(BaseSegmentor):
         if batched_slide:
             crop_imgs, crops = [], []
             for h_idx in range(h_grids):
+                # print(f'Processing {h_idx}/{h_grids}')
                 for w_idx in range(w_grids):
-                    print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
                     y1 = h_idx * h_stride
                     x1 = w_idx * w_stride
                     y2 = min(y1 + h_crop, h_img)
@@ -322,8 +322,8 @@ class EncoderDecoder(BaseSegmentor):
                 count_mat[:, :, y1:y2, x1:x2] += 1
         else:
             for h_idx in range(h_grids):
+                # print(f'Processing {h_idx}/{h_grids}')
                 for w_idx in range(w_grids):
-                    print(f'Processing {h_idx}/{h_grids} {w_idx}/{w_grids}')
                     y1 = h_idx * h_stride
                     x1 = w_idx * w_stride
                     y2 = min(y1 + h_crop, h_img)
@@ -471,7 +471,8 @@ class EncoderDecoder(BaseSegmentor):
         elif self.test_cfg.mode == 'slide_cpu':
             seg_logit = self.slide_inference_cpu(img, img_meta, rescale)
         else:
-            seg_logit = self.whole_inference(img, img_meta, rescale)
+            # seg_logit = self.whole_inference(img, img_meta, rescale)
+            raise NotImplementedError
         if hasattr(self.decode_head, 'debug_output_attention') and \
                 self.decode_head.debug_output_attention:
             output = seg_logit

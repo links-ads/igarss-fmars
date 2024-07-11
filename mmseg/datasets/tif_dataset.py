@@ -22,16 +22,19 @@ class TifDataset(CustomDataset):
         img_infos = []
         folders = [f for f in os.listdir(
             ann_dir) if os.path.isdir(os.path.join(ann_dir, f))]
+        folders = sorted(folders)
         for folder in folders:
             ann_folder = os.path.join(ann_dir, folder)
             img_folder = os.path.join(img_dir, folder)
             # append 'pre/' to both
             ann_folder = os.path.join(ann_folder, 'pre/')
             img_folder = os.path.join(img_folder, 'pre/')
-            for mosaic in os.listdir(ann_folder):
+            # for mosaic in os.listdir(ann_folder):
+            for mosaic in sorted(os.listdir(ann_folder)):
                 ann_mosaic_folder = os.path.join(ann_folder, mosaic)
                 img_mosaic_folder = os.path.join(img_folder, mosaic)
-                for tile in os.listdir(ann_mosaic_folder):
+                # for tile in os.listdir(ann_mosaic_folder):
+                for tile in sorted(os.listdir(ann_mosaic_folder)):
                     ann_tile = os.path.join(ann_mosaic_folder, tile)
                     img_tile = os.path.join(img_mosaic_folder, tile)
                     # remove img_dir and ann_dir
@@ -45,23 +48,39 @@ class TifDataset(CustomDataset):
                         img_infos.append(img_info)
         return img_infos
 
-    def get_gt_seg_maps(self, efficient_test=False):
+    def get_gt_seg_maps(self, efficient_test=False, img_order=None):
         """Get ground truth segmentation maps for evaluation."""
         gt_seg_maps = []
-        for img_info in self.img_infos:
-            seg_map = osp.join(self.ann_dir, img_info['ann']['seg_map'])
-            if efficient_test:
-                gt_seg_map = seg_map
-            else:
-                with rio.open(seg_map) as src:
-                    gt_seg_map = src.read()
-            aoi_mask = path_to_aoi_mask(seg_map)
-            gt_seg_map = gt_seg_map[0]
-            gt_seg_map = gt_seg_map + 1
-            gt_seg_map[gt_seg_map == 256] = 0
-            # set gt_seg_map to 255 where aoi_mask is 0
-            gt_seg_map[aoi_mask == 0] = 10
-            gt_seg_maps.append(gt_seg_map)
+        if img_order is not None:
+            for ori_filename in img_order:
+                seg_map = osp.join(self.ann_dir, ori_filename)
+                print(seg_map)
+                if efficient_test:
+                    gt_seg_map = seg_map
+                else:
+                    with rio.open(seg_map) as src:
+                        gt_seg_map = src.read()
+                gt_seg_map = gt_seg_map[0]
+                gt_seg_map = gt_seg_map + 1
+                gt_seg_map[gt_seg_map == 256] = 0
+                gt_seg_maps.append(gt_seg_map)
+        else:
+            for img_info in self.img_infos:
+                print(img_info['ann']['seg_map'])
+                seg_map = osp.join(self.ann_dir, img_info['ann']['seg_map'])
+                if efficient_test:
+                    raise NotImplementedError
+                    # gt_seg_map = seg_map
+                else:
+                    with rio.open(seg_map) as src:
+                        gt_seg_map = src.read()
+                aoi_mask = path_to_aoi_mask(seg_map)
+                gt_seg_map = gt_seg_map[0]
+                gt_seg_map = gt_seg_map + 1
+                gt_seg_map[gt_seg_map == 256] = 0
+                # set gt_seg_map to 255 where aoi_mask is 0
+                gt_seg_map[aoi_mask == 0] = 10
+                gt_seg_maps.append(gt_seg_map)
         return gt_seg_maps
 
 @DATASETS.register_module()
@@ -219,7 +238,6 @@ import glob
 import os
 import json
 import shapely
-import rasterio
 
 def path_2_tile_aoi(tile_path, root = './metadata/from_github_maxar_metadata/datasets' ):
     """
@@ -255,7 +273,7 @@ def path_2_tile_aoi(tile_path, root = './metadata/from_github_maxar_metadata/dat
     return tile_polyg
 
 def path_to_aoi_mask(tile_path):
-    with rasterio.open(tile_path) as src:
+    with rio.open(tile_path) as src:
         transform = src.transform
         tile_shape = (src.height, src.width)
         

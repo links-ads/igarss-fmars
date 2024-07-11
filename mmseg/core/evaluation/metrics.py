@@ -326,4 +326,13 @@ def eval_metrics(results,
             metric: np.nan_to_num(metric_value, nan=nan_to_num)
             for metric, metric_value in ret_metrics.items()
         })
+    import torchmetrics
+    # convert results and gt_seg_maps to np.array
+    results = torch.tensor(np.array(results))
+    gt_seg_maps = torch.tensor(np.array(gt_seg_maps))
+    acc_per_class = torchmetrics.functional.accuracy(
+        results, gt_seg_maps, 
+        num_classes=num_classes, ignore_index=ignore_index,
+        task='multiclass', average='none')
+    print(acc_per_class)
     return ret_metrics

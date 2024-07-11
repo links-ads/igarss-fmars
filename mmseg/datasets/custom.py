@@ -314,7 +314,9 @@ class CustomDataset(Dataset):
                  metric='mIoU',
                  logger=None,
                  efficient_test=False,
-                 **kwargs):
+                 img_order=None,
+                 **kwargs
+                 ):
         """Evaluate the dataset.
 
         Args:
@@ -334,7 +336,10 @@ class CustomDataset(Dataset):
         if not set(metric).issubset(set(allowed_metrics)):
             raise KeyError('metric {} is not supported'.format(metric))
         eval_results = {}
-        gt_seg_maps = self.get_gt_seg_maps(efficient_test)
+        if img_order is None:
+            img_order = results[1]
+            results = results[0]
+        gt_seg_maps = self.get_gt_seg_maps(efficient_test, img_order=img_order)
         if self.CLASSES is None:
             num_classes = len(
                 reduce(np.union1d, [np.unique(_) for _ in gt_seg_maps]))
