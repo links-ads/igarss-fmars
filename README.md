@@ -47,6 +47,8 @@ unzip metadata.zip
 rm metadata.zip
 ```
 
+Put the metadata in the folder `metadata/`.
+
 ### Dataset generation
 
 The Dataset is available as [parquet files](https://huggingface.co/datasets/links-ads/fmars-dataset), to be rasterized, or can be generated with the package [igarss-fmars-gen](https://github.com/links-ads/igarss-fmars-gen) Both the original Maxar Open Data dataset and the annotations genereted with FMARS are needed. An example of data folder structure can be:
