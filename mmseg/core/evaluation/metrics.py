@@ -282,14 +282,12 @@ def eval_metrics(results,
         ndarray: Per category accuracy, shape (num_classes, ).
         ndarray: Per category evaluation metrics, shape (num_classes, ).
     """
-    ignore_index=10 # TODO: put it in cfg
-
+    ignore_index = 255 # TODO: put it in cfg
     if isinstance(metrics, str):
         metrics = [metrics]
     allowed_metrics = ['mIoU', 'mDice', 'mFscore']
     if not set(metrics).issubset(set(allowed_metrics)):
         raise KeyError('metrics {} is not supported'.format(metrics))
-
     total_area_intersect, total_area_union, total_area_pred_label, \
         total_area_label = total_intersect_and_union(
             results, gt_seg_maps, num_classes, ignore_index, label_map,
@@ -326,13 +324,13 @@ def eval_metrics(results,
             metric: np.nan_to_num(metric_value, nan=nan_to_num)
             for metric, metric_value in ret_metrics.items()
         })
-    import torchmetrics
-    # convert results and gt_seg_maps to np.array
-    results = torch.tensor(np.array(results))
-    gt_seg_maps = torch.tensor(np.array(gt_seg_maps))
-    acc_per_class = torchmetrics.functional.accuracy(
-        results, gt_seg_maps, 
-        num_classes=num_classes, ignore_index=ignore_index,
-        task='multiclass', average='none')
-    print(acc_per_class)
+    # import torchmetrics
+    # # convert results and gt_seg_maps to np.array
+    # results = torch.tensor(np.array(results))
+    # gt_seg_maps = torch.tensor(np.array(gt_seg_maps))
+    # acc_per_class = torchmetrics.functional.accuracy(
+    #     results, gt_seg_maps, 
+    #     num_classes=num_classes, ignore_index=ignore_index,
+    #     task='multiclass', average='none')
+    # print(acc_per_class)
     return ret_metrics

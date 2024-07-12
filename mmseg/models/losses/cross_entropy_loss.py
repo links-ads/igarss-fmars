@@ -25,13 +25,11 @@ def cross_entropy(pred,
         weight=class_weight,
         reduction='none',
         ignore_index=ignore_index)
-
     # apply weights and do the reduction
     if weight is not None:
         weight = weight.float()
     loss = weight_reduce_loss(
         loss, weight=weight, reduction=reduction, avg_factor=avg_factor)
-
     return loss
 
 

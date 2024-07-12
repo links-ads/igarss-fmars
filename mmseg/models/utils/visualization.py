@@ -105,9 +105,17 @@ def prepare_debug_out(title, out, mean, std):
         out = np.expand_dims(out, 0)
     assert len(out.shape) == 3
     if out.shape[0] == 3:
-        if mean is not None:
-            out = torch.clamp(denorm(out, mean, std), 0, 1)[0]
-        out = dict(title=title, img=out)
+        # if mean is not None:
+        #     out = torch.clamp(denorm(out, mean, std), 0, 1)[0]
+        # out = dict(title=title, img=out)
+        if isinstance(out, np.ndarray):
+            out = torch.from_numpy(out)
+        # check if out id a cuda tensor
+        if out.is_cuda:
+            out = out.cpu()
+        out = torch.softmax(out, dim=0).numpy()
+        out = np.argmax(out, axis=0)
+        out = dict(title=title, img=out, cmap='cityscapes')
     elif out.shape[0] > 3:
         out = torch.softmax(torch.from_numpy(out), dim=0).numpy()
         out = np.argmax(out, axis=0)

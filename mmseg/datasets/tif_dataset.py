@@ -3,6 +3,11 @@ from .builder import DATASETS
 from .custom import CustomDataset
 import os.path as osp
 import rasterio as rio
+from rasterio.features import rasterize
+from pathlib import Path
+import glob
+import json
+import shapely
 
 
 @DATASETS.register_module()
@@ -52,35 +57,24 @@ class TifDataset(CustomDataset):
         """Get ground truth segmentation maps for evaluation."""
         gt_seg_maps = []
         if img_order is not None:
-            for ori_filename in img_order:
-                seg_map = osp.join(self.ann_dir, ori_filename)
-                print(seg_map)
-                if efficient_test:
-                    gt_seg_map = seg_map
-                else:
-                    with rio.open(seg_map) as src:
-                        gt_seg_map = src.read()
-                gt_seg_map = gt_seg_map[0]
-                gt_seg_map = gt_seg_map + 1
-                gt_seg_map[gt_seg_map == 256] = 0
-                gt_seg_maps.append(gt_seg_map)
+            ori_filenames = img_order
         else:
-            for img_info in self.img_infos:
-                print(img_info['ann']['seg_map'])
-                seg_map = osp.join(self.ann_dir, img_info['ann']['seg_map'])
-                if efficient_test:
-                    raise NotImplementedError
-                    # gt_seg_map = seg_map
-                else:
-                    with rio.open(seg_map) as src:
-                        gt_seg_map = src.read()
-                aoi_mask = path_to_aoi_mask(seg_map)
-                gt_seg_map = gt_seg_map[0]
-                gt_seg_map = gt_seg_map + 1
-                gt_seg_map[gt_seg_map == 256] = 0
-                # set gt_seg_map to 255 where aoi_mask is 0
-                gt_seg_map[aoi_mask == 0] = 10
-                gt_seg_maps.append(gt_seg_map)
+            ori_filenames = [img_info['ann']['seg_map'] for img_info in self.img_infos]
+        for ori_filename in ori_filenames:
+            # print(ori_filename)
+            seg_map = osp.join(self.ann_dir, ori_filename)
+            if efficient_test:
+                raise NotImplementedError
+                # gt_seg_map = seg_map
+            else:
+                with rio.open(seg_map) as src:
+                    gt_seg_map = src.read()                
+            aoi_mask = path_to_aoi_mask(seg_map)
+            gt_seg_map = gt_seg_map[0]
+            gt_seg_map = gt_seg_map + 1
+            gt_seg_map[aoi_mask == 0] = 255
+            gt_seg_map[gt_seg_map == 256] = 255  # 255 is the class for 'out of bounds', set as ignore_index 
+            gt_seg_maps.append(gt_seg_map)
         return gt_seg_maps
 
 @DATASETS.register_module()
@@ -127,8 +121,8 @@ class MaxarDataset(TifDataset):
                 self.num_event_imgs.append(glbl_img_count)
         self.all_train_paths = [img_info['filename'] for img_info in img_infos]
         return img_infos
-    
-    
+
+
 @DATASETS.register_module()
 class MaxarDatasetVal(TifDataset):
     def load_annotations(self,
@@ -168,12 +162,12 @@ class MaxarDatasetVal(TifDataset):
             else:
                 with rio.open(seg_map) as src:
                     gt_seg_map = src.read()
-            # aoi_mask = path_to_aoi_mask(seg_map)
+            aoi_mask = path_to_aoi_mask(seg_map)
             gt_seg_map = gt_seg_map[0]
             gt_seg_map = gt_seg_map + 1
             gt_seg_map[gt_seg_map == 256] = 0
             # set gt_seg_map to 255 where aoi_mask is 0
-            # gt_seg_map[aoi_mask == 0] = 10
+            gt_seg_map[aoi_mask == 0] = 255
             gt_seg_maps.append(gt_seg_map)
         return gt_seg_maps
 
@@ -230,14 +224,7 @@ class MaxarDsEntropy(MaxarDataset):
         results = dict(img_info=img_info, local_idx = (i, j))
         self.pre_pipeline(results)
         return self.pipeline(results)
-    
-    
-from rasterio.features import rasterize
-from pathlib import Path
-import glob
-import os
-import json
-import shapely
+
 
 def path_2_tile_aoi(tile_path, root = './metadata/from_github_maxar_metadata/datasets' ):
     """
@@ -279,3 +266,37 @@ def path_to_aoi_mask(tile_path):
         
     aoi_mask = rasterize([path_2_tile_aoi(tile_path)], out_shape = tile_shape, fill=False, default_value=True, transform = transform)
     return aoi_mask
+
+import numpy as np
+    
+@DATASETS.register_module()
+class MaxarNoTrees(MaxarDsEntropy):
+    CLASSES = ('background', 'road', 'building',)
+    PALETTE = ([0, 0, 0], [245, 248, 80], [78, 106, 220])
+    # same as MaxarDataset but trees are set as background
+    def get_gt_seg_maps(self, efficient_test=False, img_order=None):
+        # get gt_seg_maps from super
+        gt_seg_maps = super().get_gt_seg_maps(efficient_test, img_order)
+        # set trees as background
+        for gt_seg_map in gt_seg_maps:
+            gt_seg_map[gt_seg_map == 2] = 0
+            # shift class 3 to 2
+            gt_seg_map[gt_seg_map == 3] = 2
+        return gt_seg_maps
+    
+    
+@DATASETS.register_module()
+class MaxarNoTreesVal(MaxarDataset):
+    CLASSES = ('background', 'road', 'building',)
+    PALETTE = ([0, 0, 0], [245, 248, 80], [78, 106, 220])
+    # same as MaxarDataset but trees are set as background
+    def get_gt_seg_maps(self, efficient_test=False, img_order=None):
+        # get gt_seg_maps from super
+        gt_seg_maps = super().get_gt_seg_maps(efficient_test, img_order)
+        # set trees as background
+        for gt_seg_map in gt_seg_maps:
+            gt_seg_map[gt_seg_map == 2] = 0
+            # shift class 3 to 2
+            gt_seg_map[gt_seg_map == 3] = 2
+        return gt_seg_maps
+    

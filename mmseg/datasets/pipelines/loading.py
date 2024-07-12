@@ -363,3 +363,13 @@ class LableTifLoadIJ(LoadTifAnnotations):
         results['gt_semantic_seg'] = gt_semantic_seg
         results['seg_fields'].append('gt_semantic_seg')
         return results
+    
+@PIPELINES.register_module()
+class LableTifLoadIJNoTrees(LableTifLoadIJ):
+    def __call__(self, results):
+        results = super().__call__(results)
+        # remove trees by setting class 2 to 0
+        results['gt_semantic_seg'][results['gt_semantic_seg'] == 2] = 0
+        # shift class 3 to 2
+        results['gt_semantic_seg'][results['gt_semantic_seg'] == 3] = 2
+        return results

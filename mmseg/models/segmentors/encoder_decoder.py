@@ -492,18 +492,18 @@ class EncoderDecoder(BaseSegmentor):
         """Simple test with single image."""
         seg_logit = self.inference(img, img_meta, rescale)
         # move seg_logit to cpu, to avoid crashes at the argmax step
-        print('Moving seg_logit to cpu')
-        seg_logit = seg_logit.cpu()
-        
-        # get the max along the channel dimension
-        seg_logit_max = seg_logit.max(dim=1).values
-        seg_logit = seg_logit.squeeze() # shape (C, H, W)
-        seg_logit_max = seg_logit_max.squeeze() # shape (H, W)
-        # copy seg_logit to avoid modifying the original tensor
-        seg_logit_bg = seg_logit[0]
-        seg_logit_bg = torch.where(seg_logit_max < self.test_cfg.threshold, 1, 0) # threshold here
-        seg_logit[0] = seg_logit_bg
-        seg_logit = seg_logit.unsqueeze(0) # shape (1, C, H, W)
+        seg_logit = seg_logit.cpu()  # to avoid out of memory
+        if hasattr(self.test_cfg, 'threshold') and self.test_cfg.threshold is not None:
+            # get the max along the channel dimension
+            seg_logit_max = seg_logit.max(dim=1).values
+            seg_logit = seg_logit.squeeze() # shape (C, H, W)
+            seg_logit_max = seg_logit_max.squeeze() # shape (H, W)
+            # copy seg_logit to avoid modifying the original tensor
+            seg_logit_bg = seg_logit[0]
+            # check if self.test_cfg.threshold is defined
+            seg_logit_bg = torch.where(seg_logit_max < self.test_cfg.threshold, 1, 0) # threshold here
+            seg_logit[0] = seg_logit_bg
+            seg_logit = seg_logit.unsqueeze(0) # shape (1, C, H, W)
         if hasattr(self.decode_head, 'debug_output_attention') and \
                 self.decode_head.debug_output_attention:
             seg_pred = seg_logit[:, 0]

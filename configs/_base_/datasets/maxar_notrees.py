@@ -4,7 +4,7 @@ img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
             dict(type='ImageTifLoadIJ'),
-            dict(type='LableTifLoadIJ'),
+            dict(type='LableTifLoadIJNoTrees'),
             dict(type='RandomCrop', crop_size=crop_size),
             dict(type='Normalize', **img_norm_cfg), 
             dict(type='ImageToTensor', keys=['img', 'gt_semantic_seg']),
@@ -53,7 +53,7 @@ data = dict(
     samples_per_gpu=4,
     workers_per_gpu=16,
     train=dict(
-        type='MaxarDsEntropy',
+        type='MaxarNoTrees',
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
@@ -63,7 +63,7 @@ data = dict(
         pipeline=train_pipeline,
     ),
     val=dict(
-        type='MaxarDataset',
+        type='MaxarNoTreesVal',
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
@@ -73,7 +73,7 @@ data = dict(
         pipeline=val_pipeline,
     ),
     test=dict(
-        type='MaxarDataset',
+        type='MaxarNoTreesVal',
         data_root='./',
         img_dir = 'data/maxar-open-data/',
         img_suffix = '.tif',
