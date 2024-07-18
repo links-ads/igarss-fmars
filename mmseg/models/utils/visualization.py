@@ -104,32 +104,37 @@ def prepare_debug_out(title, out, mean, std):
     if len(out.shape) == 2:
         out = np.expand_dims(out, 0)
     assert len(out.shape) == 3
-    if out.shape[0] == 3:
-        # if mean is not None:
-        #     out = torch.clamp(denorm(out, mean, std), 0, 1)[0]
-        # out = dict(title=title, img=out)
-        if isinstance(out, np.ndarray):
-            out = torch.from_numpy(out)
-        # check if out id a cuda tensor
-        if out.is_cuda:
-            out = out.cpu()
-        out = torch.softmax(out, dim=0).numpy()
-        out = np.argmax(out, axis=0)
-        out = dict(title=title, img=out, cmap='cityscapes')
-    elif out.shape[0] > 3:
-        out = torch.softmax(torch.from_numpy(out), dim=0).numpy()
-        out = np.argmax(out, axis=0)
-        out = dict(title=title, img=out, cmap='cityscapes')
-    elif out.shape[0] == 1:
-        if is_integer_array(out) and np.max(out) > 1:
-            out = dict(title=title, img=out[0], cmap='cityscapes')
-        elif np.min(out) >= 0 and np.max(out) <= 1:
-            out = dict(title=title, img=out[0], cmap='viridis', vmin=0, vmax=1)
+    if title == 'Image' or title == 'Source Image' or title == 'Target Image' or title == 'Mix Image': 
+        if mean is not None:
+            out = torch.clamp(denorm(out, mean, std), 0, 1)[0]
+        out = dict(title=title, img=out)
+    else: 
+        if out.shape[0] == 3:
+            # if mean is not None:
+            #     out = torch.clamp(denorm(out, mean, std), 0, 1)[0]
+            # out = dict(title=title, img=out)
+            if isinstance(out, np.ndarray):
+                out = torch.from_numpy(out)
+            # check if out id a cuda tensor
+            if out.is_cuda:
+                out = out.cpu()
+            out = torch.softmax(out, dim=0).numpy()
+            out = np.argmax(out, axis=0)
+            out = dict(title=title, img=out, cmap='cityscapes')
+        elif out.shape[0] > 3:
+            out = torch.softmax(torch.from_numpy(out), dim=0).numpy()
+            out = np.argmax(out, axis=0)
+            out = dict(title=title, img=out, cmap='cityscapes')
+        elif out.shape[0] == 1:
+            if is_integer_array(out) and np.max(out) > 1:
+                out = dict(title=title, img=out[0], cmap='cityscapes')
+            elif np.min(out) >= 0 and np.max(out) <= 1:
+                out = dict(title=title, img=out[0], cmap='viridis', vmin=0, vmax=1)
+            else:
+                out = dict(
+                    title=title, img=out[0], cmap='viridis', range_in_title=True)
         else:
-            out = dict(
-                title=title, img=out[0], cmap='viridis', range_in_title=True)
-    else:
-        raise NotImplementedError(out.shape)
+            raise NotImplementedError(out.shape)
     return out
 
 
