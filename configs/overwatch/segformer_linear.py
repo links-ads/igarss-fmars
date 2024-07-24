@@ -1,16 +1,14 @@
 _base_ = [
     '../_base_/default_runtime.py',
-    "../_base_/models/daformer_sepaspp_mitb3.py",
-    "../_base_/datasets/uda_maxar_to_maxar_notrees.py",
-    "../_base_/uda/dacs.py",
+    '../_base_/models/segformer_b3.py', 
+    '../_base_/datasets/maxar_notrees.py',
     '../_base_/schedules/adamw.py',
-    '../_base_/schedules/poly10warm.py'
 ]
 # Random Seed
 seed = 0
 optimizer_config = None
 optimizer = dict(
-    lr=1e-05,
+    lr=1e-03,
     paramwise_cfg=dict(
         custom_keys=dict(
             head=dict(lr_mult=10.0),
@@ -18,11 +16,12 @@ optimizer = dict(
             norm=dict(decay_mult=0.0)))
 )
 
-runner = dict(type='IterBasedRunner', max_iters=100000)
+runner = dict(type='IterBasedRunner', max_iters=1000000)
+lr_config = dict(policy='fixed')
 
 # Logging Configuration
-checkpoint_config = dict(by_epoch=False, interval=1000000, max_keep_ckpts=20)
-evaluation = dict(interval=1000, metric='mIoU', save_best='mIoU')
+checkpoint_config = dict(by_epoch=False, interval=10000000, max_keep_ckpts=20)
+evaluation = dict(interval=10000, metric='mIoU', save_best='mIoU')
 
 model = dict(
     decode_head=dict(
@@ -37,5 +36,6 @@ model = dict(
         ),
     # model training and testing settings
     train_cfg=dict(),
-    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(384, 384),)
+    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(384, 384),
+                  thresholds=[0.1, 0.05])
 )

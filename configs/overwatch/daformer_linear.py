@@ -4,7 +4,6 @@ _base_ = [
     "../_base_/datasets/uda_maxar_to_maxar_notrees.py",
     "../_base_/uda/dacs.py",
     '../_base_/schedules/adamw.py',
-    '../_base_/schedules/poly10warm.py'
 ]
 # Random Seed
 seed = 0
@@ -17,6 +16,8 @@ optimizer = dict(
             pos_block=dict(decay_mult=0.0),
             norm=dict(decay_mult=0.0)))
 )
+
+lr_config = dict(policy='fixed')
 
 runner = dict(type='IterBasedRunner', max_iters=100000)
 

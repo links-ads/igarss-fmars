@@ -1,8 +1,7 @@
 _base_ = [
     '../_base_/default_runtime.py',
-    "../_base_/models/daformer_sepaspp_mitb3.py",
-    "../_base_/datasets/uda_maxar_to_maxar_notrees.py",
-    "../_base_/uda/dacs.py",
+    '../_base_/models/segformer_b3.py', 
+    '../_base_/datasets/maxar_notrees.py',
     '../_base_/schedules/adamw.py',
     '../_base_/schedules/poly10warm.py'
 ]
@@ -22,7 +21,7 @@ runner = dict(type='IterBasedRunner', max_iters=1000000)
 
 # Logging Configuration
 checkpoint_config = dict(by_epoch=False, interval=10000000, max_keep_ckpts=20)
-evaluation = dict(interval=10000, metric='mIoU', save_best='mIoU')
+evaluation = dict(interval=10, metric='mIoU', save_best='mIoU')
 
 model = dict(
     decode_head=dict(
@@ -37,5 +36,6 @@ model = dict(
         ),
     # model training and testing settings
     train_cfg=dict(),
-    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(384, 384),)
+    test_cfg=dict(mode='slide', crop_size=(512, 512), stride=(512, 512),
+                  thresholds=[0.1, 0.05])    
 )

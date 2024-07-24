@@ -203,6 +203,7 @@ class MaxarDsEntropy(MaxarDataset):
         
         idx, i, j = idx_3d
         img_info = self.img_infos[idx]
+        # print(img_info['filename'])
         ann_info = self.get_ann_info(idx)
         results = dict(img_info=img_info, ann_info=ann_info, local_idx = (i, j))
         self.pre_pipeline(results)

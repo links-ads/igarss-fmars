@@ -493,17 +493,37 @@ class EncoderDecoder(BaseSegmentor):
         seg_logit = self.inference(img, img_meta, rescale)
         # move seg_logit to cpu, to avoid crashes at the argmax step
         seg_logit = seg_logit.cpu()  # to avoid out of memory
-        if hasattr(self.test_cfg, 'threshold') and self.test_cfg.threshold is not None:
-            # get the max along the channel dimension
-            seg_logit_max = seg_logit.max(dim=1).values
-            seg_logit = seg_logit.squeeze() # shape (C, H, W)
-            seg_logit_max = seg_logit_max.squeeze() # shape (H, W)
-            # copy seg_logit to avoid modifying the original tensor
-            seg_logit_bg = seg_logit[0]
-            # check if self.test_cfg.threshold is defined
-            seg_logit_bg = torch.where(seg_logit_max < self.test_cfg.threshold, 1, 0) # threshold here
-            seg_logit[0] = seg_logit_bg
-            seg_logit = seg_logit.unsqueeze(0) # shape (1, C, H, W)
+        if hasattr(self.test_cfg, 'thresholds') and self.test_cfg.thresholds is not None:
+            
+            # # old version
+            # # get the max along the channel dimension
+            # seg_logit_max = seg_logit.max(dim=1).values
+            # seg_logit = seg_logit.squeeze() # shape (C, H, W)
+            # seg_logit_max = seg_logit_max.squeeze() # shape (H, W)
+            # # copy seg_logit to avoid modifying the original tensor
+            # seg_logit_bg = seg_logit[0]
+            # # check if self.test_cfg.threshold is defined
+            # seg_logit_bg = torch.where(seg_logit_max < self.test_cfg.threshold, 1, 0) # threshold here
+            # seg_logit[0] = seg_logit_bg
+            # seg_logit = seg_logit.unsqueeze(0) # shape (1, C, H, W)
+            
+            # new version
+            # apply sigmoid to seg_logit
+            # seg_logit = torch.sigmoid(seg_logit)
+            # create new tensor with same shape as seg_logit[0]
+            seg_logit_bg = torch.where((seg_logit[0][1] < self.test_cfg.thresholds[0]) & (seg_logit[0][2] < self.test_cfg.thresholds[1]), 1, 0)
+            seg_logit_road = torch.where(
+                (seg_logit[0][1] >= self.test_cfg.thresholds[0]) & (seg_logit[0][2] < self.test_cfg.thresholds[1])
+                |
+                (seg_logit[0][1] >= self.test_cfg.thresholds[0]) & (seg_logit[0][2] >= self.test_cfg.thresholds[1]) & (seg_logit[0][1] > seg_logit[0][2])
+                , 1, 0)
+            seg_logit_build = torch.where(
+                (seg_logit[0][2] >= self.test_cfg.thresholds[1]) & (seg_logit[0][1] < self.test_cfg.thresholds[0])
+                |
+                (seg_logit[0][2] >= self.test_cfg.thresholds[1]) & (seg_logit[0][1] >= self.test_cfg.thresholds[0]) & (seg_logit[0][2] >= seg_logit[0][1])
+                , 1, 0)
+            seg_logit= torch.stack([seg_logit_bg, seg_logit_road, seg_logit_build], dim=0).unsqueeze(0)
+                    
         if hasattr(self.decode_head, 'debug_output_attention') and \
                 self.decode_head.debug_output_attention:
             seg_pred = seg_logit[:, 0]

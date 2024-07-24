@@ -170,7 +170,7 @@ class CustomDataset(Dataset):
         Returns:
             dict: Annotation info of specified index.
         """
-
+        # print(self.img_infos[idx]['ann']) 
         return self.img_infos[idx]['ann']
 
     def pre_pipeline(self, results):
